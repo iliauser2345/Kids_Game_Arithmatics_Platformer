@@ -1,3 +1,4 @@
 import { Game } from './src/Game.js';
-game= new Game();
+const game= new Game();
 game.Play();
+//launches the game

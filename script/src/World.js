@@ -4,6 +4,8 @@ export class World{
 
     }
     // methods
-
+    GenerateWorld(){
+        console.log("worldgenned");
+    }
 
 }
