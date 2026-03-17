@@ -15,7 +15,7 @@ export class Game{
     }
     // methods
 
-    
+    //test
         //Play
             //1.load map
              //   1.1 spawn in player
