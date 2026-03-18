@@ -1,0 +1,23 @@
+.
+├── assets
+│   ├── PLACEHOLDER_bgr_image.jpg
+│   └── PLACEHOLDER_character_img.png
+├── css
+│   └── style.css
+├── index.html
+├── script
+│   ├── script.js
+│   └── src
+│       ├── Chest.js
+│       ├── Enemy.js
+│       ├── Entity.js
+│       ├── Game.js
+│       ├── Inventory.js
+│       ├── Item.js
+│       ├── Parser.js
+│       ├── Player.js
+│       ├── Window.js
+│       └── World.js
+└── tree.txt
+
+5 directories, 16 files
