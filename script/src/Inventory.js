@@ -1,7 +1,10 @@
 export class Inventory{
+    //fields
 
-    constructor(){
+    invCap; //:: int
 
+    constructor(capacity){
+        this.invCap=capacity;
     }
     // methods
 

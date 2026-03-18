@@ -28,7 +28,8 @@ export const PlayerStates ={
     _HURT: "hurt"
 }
 export const NonPlayerStates ={
-
+    
+    _NPCDEACTIVE: "nonactive",
     _NPCIDLE: "idle",
     _NPCWALK: "walk",
     _NPCRUN: "run",
