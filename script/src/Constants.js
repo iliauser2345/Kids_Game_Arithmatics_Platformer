@@ -19,6 +19,7 @@ export const PlayerStates ={
     _WALK: "walk",
     _RUN: "run",
     _JUMP: "jump",
+    _FALL: "fall",
     _INTERACT: "interact",
     _ATTACK1: "attack1",
     _ATTACK2: "attack2",
@@ -28,12 +29,13 @@ export const PlayerStates ={
     _HURT: "hurt"
 }
 export const NonPlayerStates ={
-    
+
     _NPCDEACTIVE: "nonactive",
     _NPCIDLE: "idle",
     _NPCWALK: "walk",
     _NPCRUN: "run",
     _NPCJUMP: "jump",
+    _NPCFALL: "fall",
     _NPCATK: "attack",
     _NPCHURT: "hurt",
     _NPCDEATH: "death"

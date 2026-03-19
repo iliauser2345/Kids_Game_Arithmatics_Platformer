@@ -1,32 +1,44 @@
-import { KEYS } from './constants.js';
-import { PlayerStates } from './constants.js';
 import { Inventory } from './Inventory.js';
-export class Player{
+import { Entity } from './Entity.js';
+export class Player extends Entity{
     //fields
     
-    playerState; //::string
     playerInventory; //::Inventory
     playerEquipment; //::Item
-    playerVelocityX;
-    playerVelocitY;
-    playerHealth; //::int
     playerStamina; //::int
     
 
-    constructor(state){ //property state is a starting state when creating a player. it would change
+    constructor(){ //property state is a starting state when creating a player. it would change
 
-        this.playerState=state;
+        super(x,y,100);
+        this.playerState=this.entityState;
         this.playerInventory=new Inventory(5);
-        this.playerHealth=100;
         this.playerStamina=75;
+        this.playerEquipment=null;
 
     }
     // methods
     
     /*
         What player must do:
-            Get/Loose HP
-            methods for animations 
+            Update HP
+            Update inventory
+            Play Animations
+                -Idle
+                -Walk
+                -Run
+                -Jump
+                -Fall
+                -Interact
+                -Attack
+                -Hurt
+                -Die
      */
+    PlayAnimation(state){
+
+    }
+    SetEquipment(item){
+
+    }
 
 }
