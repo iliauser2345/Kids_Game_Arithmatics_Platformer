@@ -34,7 +34,7 @@ export class Player extends Entity{
                 -Hurt
                 -Die
      */
-    PlayAnimation(state){
+    PlayPlayerAnimation(state){
 
     }
     SetEquipment(item){

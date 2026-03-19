@@ -13,7 +13,7 @@ export class Enemy extends Entity{
         this.SetEquipment(EnemyEq)
     }
     // methods
-    PlayAnimation(state,name){
+    PlayEnemyAnimation(state,name){
 
     }
     SetEquipment(item){
