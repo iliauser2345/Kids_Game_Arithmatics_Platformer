@@ -12,6 +12,7 @@ export class World{
     // methods
     GenerateWorld(){
 
+        
 
 
 
@@ -22,5 +23,7 @@ export class World{
 
         console.log("worldgenned");
     }
+
+    
 
 }
