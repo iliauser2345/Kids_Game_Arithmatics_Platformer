@@ -24,15 +24,13 @@ export class Player extends Entity{
             Update HP
             Update inventory
             Play Animations
-                -Idle
-                -Walk
-                -Run
-                -Jump
-                -Fall
-                -Interact
-                -Attack
-                -Hurt
-                -Die
+                --Idle
+                --Walk
+                --Run
+                --Attack 1, 2, 3, 4
+                --Jump
+                --Hurt
+                --Die
      */
     PlayPlayerAnimation(state){
 
