@@ -1,23 +1,68 @@
-.
-├── assets
-│   ├── PLACEHOLDER_bgr_image.jpg
-│   └── PLACEHOLDER_character_img.png
-├── css
-│   └── style.css
-├── index.html
-├── script
-│   ├── script.js
-│   └── src
-│       ├── Chest.js
-│       ├── Enemy.js
-│       ├── Entity.js
-│       ├── Game.js
-│       ├── Inventory.js
-│       ├── Item.js
-│       ├── Parser.js
-│       ├── Player.js
-│       ├── Window.js
-│       └── World.js
-└── tree.txt
+./
+|-- assets
+|   |-- COUPON.pdf
+|   |-- COUPON.png
+|   |-- Enchantress
+|   |   |-- Attack_1.png
+|   |   |-- Attack_2.png
+|   |   |-- Attack_3.png
+|   |   |-- Attack_4.png
+|   |   |-- Dead.png
+|   |   |-- Hurt.png
+|   |   |-- Idle.png
+|   |   |-- Jump.png
+|   |   |-- Run.png
+|   |   `-- Walk.png
+|   |-- Font.txt
+|   |-- Free\ Assets\ Craftpix!.url
+|   |-- Knight
+|   |   |-- Attack_1.png
+|   |   |-- Attack_2.png
+|   |   |-- Attack_3.png
+|   |   |-- Attack_4.png
+|   |   |-- Dead.png
+|   |   |-- Hurt.png
+|   |   |-- Idle.png
+|   |   |-- Jump.png
+|   |   |-- Run.png
+|   |   `-- Walk.png
+|   |-- Knight_spritelist.png
+|   |-- Licens.txt
+|   |-- Musketeer
+|   |   |-- Attack_1.png
+|   |   |-- Attack_2.png
+|   |   |-- Attack_3.png
+|   |   |-- Attack_4.png
+|   |   |-- Dead.png
+|   |   |-- Hurt.png
+|   |   |-- Idle.png
+|   |   |-- Jump.png
+|   |   |-- Run.png
+|   |   `-- Walk.png
+|   |-- PLACEHOLDER.ico
+|   |-- PLACEHOLDER_bgr_image.jpg
+|   |-- PLACEHOLDER_character_img.png
+|   `-- PSD
+|       |-- Enchantress_spritelist.psd
+|       |-- Knight_spritelist.psd
+|       `-- Swordsman_spritelist.psd
+|-- css
+|   `-- style.css
+|-- index.html
+|-- script
+|   |-- script.js
+|   `-- src
+|       |-- Chest.js
+|       |-- Constants.js
+|       |-- Enemy.js
+|       |-- Entity.js
+|       |-- Game.js
+|       |-- Inventory.js
+|       |-- Item.js
+|       |-- Parser.js
+|       |-- Player.js
+|       |-- Window.js
+|       `-- World.js
+`-- tree.txt
 
-5 directories, 16 files
+9 directories, 57 files

@@ -4,6 +4,7 @@ import { Window } from './Window.js';
 import { Entity } from './Entity.js';
 import { Enemy } from './Enemy.js';
 import { Player } from './Player.js';
+import { PlayerStates } from './Constants.js';
 
 export class Game{
 
@@ -41,7 +42,7 @@ export class Game{
         const delta = (timestamp - this.lastTime) / 1000;
         this.lastTime = timestamp;
         // vv Hieronder komen de update methods vv
-
+        this.player.Update(delta);
         this.loopId = requestAnimationFrame(this.loop.bind(this)); // hier ook .bind
     }
 
@@ -61,6 +62,7 @@ export class Game{
         window.player = this.player;
         window.world = this.world;
         window.game = this;
+        window.PlayerStates = PlayerStates; 
     }
 
 }
