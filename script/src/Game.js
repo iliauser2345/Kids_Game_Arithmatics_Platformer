@@ -8,10 +8,12 @@ import { Player } from './Player.js';
 export class Game{
 
     constructor(){
-        this.parser= new Parser();
-        this.world= new World();
-        this.player= new Player();
-        this.window=new Window();
+        this.parser = new Parser();
+        this.world = new World();
+        this.player = new Player();
+        this.window = new Window();
+        this.loopId = null;
+        this.lastTime = 0;
     }
     // methods
 
@@ -31,21 +33,26 @@ export class Game{
         this.world.GenerateWorld();
         this.window.LoadWindow("start");
         this.player.CreateElement();
-        
-        // Main loop concept
-        let lastTime = 0;
 
-        const loop = (timestamp) => {
-            const delta = (timestamp - lastTime) / 1000; // Delta, het is het verschil tussen frames, en dit zorgt ervoor dat mensen op 120Hz niet een spel hebben wat 2x zo snel is.
-            lastTime = timestamp;
+        this.loopId = requestAnimationFrame(this.loop.bind(this)); // .bind(this) is voor een bugfix, een arrowfunction kan ook als fix dienen.
+    }
+    
+    loop(timestamp){
+        const delta = (timestamp - this.lastTime) / 1000;
+        this.lastTime = timestamp;
+        // vv Hieronder komen de update methods vv
 
-            // this.player.Update(delta); // We geven delta mee als argument zodat we alles in seconden kunnen runnen, het maakt dus niert uit wat voor Hz/fps onze gebruikers hebben.
-            requestAnimationFrame(loop);
-        };
+        this.loopId = requestAnimationFrame(this.loop.bind(this)); // hier ook .bind
+    }
 
-        requestAnimationFrame(loop);
 
-        console.log("succes");
+    Pause(){
+        cancelAnimationFrame(this.loopId); // pauseert de loop
+    }
+
+    Resume(){
+        this.lastTime = 0;
+        this.loopId = requestAnimationFrame(this.loop.bind(this)); //en hier
     }
 
     Debug(){
@@ -53,6 +60,7 @@ export class Game{
 
         window.player = this.player;
         window.world = this.world;
+        window.game = this;
     }
 
 }
