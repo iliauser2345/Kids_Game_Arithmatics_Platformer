@@ -31,6 +31,19 @@ export class Game{
         this.world.GenerateWorld();
         this.window.LoadWindow("start");
         this.player.CreateElement();
+        
+        // Main loop concept
+        let lastTime = 0;
+
+        const loop = (timestamp) => {
+            const delta = (timestamp - lastTime) / 1000; // Delta, het is het verschil tussen frames, en dit zorgt ervoor dat mensen op 120Hz niet een spel hebben wat 2x zo snel is.
+            lastTime = timestamp;
+
+            // this.player.Update(delta); // We geven delta mee als argument zodat we alles in seconden kunnen runnen, het maakt dus niert uit wat voor Hz/fps onze gebruikers hebben.
+            requestAnimationFrame(loop);
+        };
+
+        requestAnimationFrame(loop);
 
         console.log("succes");
     }

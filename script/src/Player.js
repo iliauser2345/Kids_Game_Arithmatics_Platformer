@@ -4,8 +4,7 @@ import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
 // Constants
-import { PlayerStates } from './Constants.js';
-import { PlayerSize } from './Constants.js';
+import { PlayerStates,PlayerSize } from './Constants.js';
 
 export class Player extends Entity{
     //fields
@@ -39,11 +38,11 @@ export class Player extends Entity{
                 --Die
      */
     CreateElement(){ // Deze mischien ook in Entity.js hebben zodat we polymorphism kunnen gebruiken
-        this.playerElement = document.createElement('canvas');
-        this.playerElement.id = 'player';
-        this.playerElement.width = PlayerSize._WIDTH;
-        this.playerElement.height = PlayerSize._HEIGHT;
-        document.body.appendChild(this.playerElement);
+        this.playerCanvasElement = document.createElement('canvas');
+        this.playerCanvasElement.id = 'player';
+        this.playerCanvasElement.width = PlayerSize._WIDTH;
+        this.playerCanvasElement.height = PlayerSize._HEIGHT;
+        document.body.appendChild(this.playerCanvasElement);
     }
 
 
