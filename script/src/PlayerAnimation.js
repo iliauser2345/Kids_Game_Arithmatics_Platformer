@@ -2,17 +2,15 @@
  * Allows you to input the location of   *
  * the correct image of the sprite sheet *
  *****************************************/
-// TEMP
-const _SPRITEWIDTH = 125;
-const _SPRITEHEIGHT = 130;
+import { PlayerSize } from "./Constants";
 
 
 function getSpriteLoc(amountOfFrames,spritesheet_row){
     let returnarr = [];
     for (let i = 0;i<=amountOfFrames;i++){
         returnarr[i]={
-            x: _SPRITEWIDTH*i,
-            y: _SPRITEHEIGHT*spritesheet_row
+            x: PlayerSize._WIDTH*i,
+            y: PlayerSize._HEIGHT*spritesheet_row
         };
     }
     return returnarr;

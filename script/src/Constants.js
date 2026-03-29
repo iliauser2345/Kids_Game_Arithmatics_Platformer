@@ -45,3 +45,8 @@ export const EnviromentStates ={
     _ENVIDLE: "idle",
     _ENVINTERACTED: "interacted"
 }
+
+export const PlayerSize ={
+    _WIDTH: 125,
+    _HEIGHT: 130
+}

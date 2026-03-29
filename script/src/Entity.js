@@ -9,7 +9,7 @@ export class Entity{
     entityHealth;
 
 
-    constructor(x=0,y=0,health=null){
+    constructor({x=0,y=0,health=null}={}){ // Changed to be able to access default values
         this.entityState="idle";
         this.entityPositionX=x;
         this.entityPositionY=y;
@@ -19,14 +19,21 @@ export class Entity{
 
     }
     // methods
+    CreateElement(){
+        
+    }
     SetState(state){
         this.entityState=state;
     }
-    Spawn(x,y){
+    MoveTo(x,y){ // Uses coordinates to move
         this.entityPositionX=x;
         this.entityPositionY=y;        
     }
-    SetVelocity(x,y){
+    Move(){ // Uses entity velocity to move
+        this.entityPositionX+=this.entityVelocityX;
+        this.entityPositionY+=this.entityVelocityY;
+    }
+    SetVelocity({x = this.entityVelocityX, y = this.entityVelocityY}={}){ // Changed to be able to only change one axis at a time
         this.entityVelocityX=x;
         this.entityVelocityY=y;
     }

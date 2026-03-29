@@ -1,5 +1,12 @@
+// Classes
+
 import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
+
+// Constants
+import { PlayerStates } from './Constants.js';
+import { PlayerSize } from './Constants.js';
+
 export class Player extends Entity{
     //fields
     
@@ -8,14 +15,13 @@ export class Player extends Entity{
     playerStamina; //::int
     
 
-    constructor(){ //property state is a starting state when creating a player. it would change
+    constructor(xas,yas){ //property state is a starting state when creating a player. it would change
 
-        super(x,y,100);
-        this.playerState=this.entityState;
+        super({x:xas,y:yas,health:100});
+        this.entityState=PlayerStates._IDLE;
         this.playerInventory=new Inventory(5);
         this.playerStamina=75;
         this.playerEquipment=null;
-
     }
     // methods
     
@@ -32,6 +38,15 @@ export class Player extends Entity{
                 --Hurt
                 --Die
      */
+    CreateElement(){ // Deze mischien ook in Entity.js hebben zodat we polymorphism kunnen gebruiken
+        this.playerElement = document.createElement('canvas');
+        this.playerElement.id = 'player';
+        this.playerElement.width = PlayerSize._WIDTH;
+        this.playerElement.height = PlayerSize._HEIGHT;
+        document.body.appendChild(this.playerElement);
+    }
+
+
     PlayPlayerAnimation(state){
 
     }

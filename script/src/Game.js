@@ -30,8 +30,16 @@ export class Game{
     Play(){
         this.world.GenerateWorld();
         this.window.LoadWindow("start");
+        this.player.CreateElement();
 
         console.log("succes");
+    }
+
+    Debug(){
+        // Deze method maakt de instances zoals this.player en this.world zichtbaar in de browser inspector console voor debugging.
+
+        window.player = this.player;
+        window.world = this.world;
     }
 
 }
