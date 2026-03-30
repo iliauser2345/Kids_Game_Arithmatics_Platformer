@@ -4,7 +4,7 @@ import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
 // Constants
-import { PlayerStates,PlayerSize,PlayerAnimations } from './Constants.js';
+import { PlayerStates,PlayerSize,PlayerAnimations, KEYS } from './Constants.js';
 
 export class Player extends Entity{
     //fields
@@ -12,6 +12,7 @@ export class Player extends Entity{
     playerInventory; //::Inventory
     playerEquipment; //::Item
     playerStamina; //::int
+    keysDown = {}; //::array
     
 
     constructor(xas,yas){ //property state is a starting state when creating a player. it would change
@@ -26,6 +27,7 @@ export class Player extends Entity{
         this.staggerFrames = 6;
         this.playerImage = new Image();
         this.playerImage.src = './assets/Knight_spritelist.png';
+        this.keysDown = {};
     }
     // methods
     
@@ -52,15 +54,16 @@ export class Player extends Entity{
         this.ctx = this.playerCanvasElement.getContext('2d'); // need this to draw
     }
 
-    SetState(state){
-        this.entityState = state;
-    }
-    Update(delta){
-        // super.Update(delta);
+    Update(delta, keysDown){
         this.PlayPlayerAnimation(this.entityState);
         this.gameFrame++;
     }
 
+    SetState(state){
+        if (state){
+            this.entityState = state;
+        }
+    }
 
     PlayPlayerAnimation(state){
 

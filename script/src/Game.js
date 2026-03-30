@@ -42,7 +42,7 @@ export class Game{
         const delta = (timestamp - this.lastTime) / 1000;
         this.lastTime = timestamp;
         // vv Hieronder komen de update methods vv
-        this.player.Update(delta);
+        this.player.Update(delta, this.parser.getKeysArray());
         this.loopId = requestAnimationFrame(this.loop.bind(this)); // hier ook .bind
     }
 
