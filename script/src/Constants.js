@@ -45,7 +45,7 @@ export const EnviromentStates ={
 }
 
 export const PlayerSize ={
-    _WIDTH: 125,
+    _WIDTH: 128,
     _HEIGHT: 130
 }
 
@@ -71,15 +71,15 @@ function getSpriteLoc(amountOfFrames, spritesheet_row) {
 
 export const PlayerAnimations = {
 
-    "Idle":    { loc: getSpriteLoc(6, 0) },
-    "Walk":    { loc: getSpriteLoc(8, 1) },
-    "Run":     { loc: getSpriteLoc(7, 2) },
-    "Attack1": { loc: getSpriteLoc(5, 3) },
-    "Attack2": { loc: getSpriteLoc(2, 4) },
-    "Attack3": { loc: getSpriteLoc(5, 5) },
-    "Attack4": { loc: getSpriteLoc(5, 6) },
-    "Jump":    { loc: getSpriteLoc(6, 7) },
-    "Hurt":    { loc: getSpriteLoc(3, 8) },
-    "Death":   { loc: getSpriteLoc(4, 9) }
+    "idle":    { loc: getSpriteLoc(6, 0) },
+    "walk":    { loc: getSpriteLoc(8, 1) },
+    "run":     { loc: getSpriteLoc(7, 2) },
+    "attack1": { loc: getSpriteLoc(5, 3) },
+    "attack2": { loc: getSpriteLoc(2, 4) },
+    "attack3": { loc: getSpriteLoc(5, 5) },
+    "attack4": { loc: getSpriteLoc(5, 6) },
+    "jump":    { loc: getSpriteLoc(6, 7) },
+    "hurt":    { loc: getSpriteLoc(3, 8) },
+    "death":   { loc: getSpriteLoc(4, 9) }
 
 }
