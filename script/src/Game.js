@@ -39,7 +39,8 @@ export class Game{
     }
     
     loop(timestamp){
-        const delta = (timestamp - this.lastTime) / 1000;
+        if (!this.lastTime) this.lastTime = timestamp;
+        const delta = (timestamp - this.lastTime);
         this.lastTime = timestamp;
         // vv Hieronder komen de update methods vv
         this.player.Update(delta, this.parser.getKeysArray());

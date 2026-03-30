@@ -24,7 +24,8 @@ export class Player extends Entity{
         this.playerEquipment=null;
 
         this.gameFrame = 0;
-        this.staggerFrames = 6;
+        this.animationTimer = 0;
+        this.animationInterval = 100; // ms per frame
         this.playerImage = new Image();
         this.playerImage.src = './assets/Knight_spritelist.png';
         this.keysDown = {};
@@ -55,8 +56,7 @@ export class Player extends Entity{
     }
 
     Update(delta, keysDown){
-        this.PlayPlayerAnimation(this.entityState);
-        this.gameFrame++;
+        this.PlayPlayerAnimation(this.entityState, delta);
     }
 
     SetState(state){
@@ -65,12 +65,20 @@ export class Player extends Entity{
         }
     }
 
-    PlayPlayerAnimation(state){
+    PlayPlayerAnimation(state, delta){
+
+        // De volgende paar lijntjes code zijn ervoor om te zorgen dat animations niet sneller worden op basis van fps.
+        this.animationTimer += delta; 
+
+        if (this.animationTimer >= this.animationInterval){
+            this.gameFrame++;
+            this.animationTimer = 0;
+        }
 
         this.ctx.clearRect(0, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT);
 
         const animation = PlayerAnimations[state]; // e.g. PlayerAnimations["Idle"]
-        const position = Math.floor(this.gameFrame / this.staggerFrames) % animation.loc.length;
+        const position = Math.floor(this.gameFrame) % animation.loc.length;
 
         const frameX = animation.loc[position].x;
         const frameY = animation.loc[position].y;
