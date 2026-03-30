@@ -4,7 +4,7 @@ import { Window } from './Window.js';
 import { Entity } from './Entity.js';
 import { Enemy } from './Enemy.js';
 import { Player } from './Player.js';
-import { PlayerStates } from './Constants.js';
+import { PlayerStates,PlayerAnimations,PlayerSize } from './Constants.js';
 
 export class Game{
 
@@ -62,7 +62,9 @@ export class Game{
         window.player = this.player;
         window.world = this.world;
         window.game = this;
-        this.window.PlayerStates = PlayerStates;
+        window.PlayerStates = PlayerStates;
+        window.PlayerAnimations = PlayerAnimations;
+        window.PlayerSize = PlayerSize;
     }
 
 }
