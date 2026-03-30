@@ -25,9 +25,10 @@ export class Player extends Entity{
 
         this.gameFrame = 0;
         this.animationTimer = 0;
-        this.animationInterval = 100; // ms per frame
+        this.animationInterval = 200; // ms per frame
         this.playerImage = new Image();
         this.playerImage.src = './assets/Knight_spritelist.png';
+        this.direction = 1; // default facing right
         this.keysDown = {};
     }
     // methods
@@ -50,13 +51,54 @@ export class Player extends Entity{
         this.playerCanvasElement.id = 'player';
         this.playerCanvasElement.width = PlayerSize._WIDTH;
         this.playerCanvasElement.height = PlayerSize._HEIGHT;
+        this.playerCanvasElement.style.position = 'absolute'
         document.body.appendChild(this.playerCanvasElement);
 
         this.ctx = this.playerCanvasElement.getContext('2d'); // need this to draw
     }
 
     Update(delta, keysDown){
-        this.PlayPlayerAnimation(this.entityState, delta);
+        this.HandleInput(delta, keysDown);
+        this.PlayPlayerAnimation(this.entityState, delta, this.direction);
+    }
+
+    HandleInput(delta, keysDown){
+        this.HandleX(delta, keysDown);
+    }
+
+    HandleX(delta, keysDown){
+
+        let baseSpeed = 100/delta;
+        let velocity;
+        if (keysDown[KEYS._AUX]){
+            velocity = baseSpeed*1.5;
+        } else {
+            velocity = baseSpeed;
+        }
+
+        const pressedRight = !!keysDown[KEYS._RWD];
+        const pressedLeft = !!keysDown[KEYS._LWD];
+
+        if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft)) {
+            this.SetVelocity({x:0});
+
+        } else if (pressedRight) {
+            this.SetVelocity({x:velocity});
+            this.direction = 1;
+
+        } else if (pressedLeft) {
+            this.SetVelocity({x:velocity * -1});
+            this.direction = -1;
+
+        }
+        if (this.entityVelocityX == 0){
+            this.SetState(PlayerStates._IDLE);
+        } else if (this.entityVelocityX > baseSpeed || this.entityVelocityX < -baseSpeed){
+            this.SetState(PlayerStates._RUN);
+        } else {
+            this.SetState(PlayerStates._WALK);
+        }
+        this.Move();
     }
 
     SetState(state){
@@ -65,31 +107,45 @@ export class Player extends Entity{
         }
     }
 
-    PlayPlayerAnimation(state, delta){
+    PlayPlayerAnimation(state, delta, direction){
 
-        // De volgende paar lijntjes code zijn ervoor om te zorgen dat animations niet sneller worden op basis van fps.
         this.animationTimer += delta; 
-
         if (this.animationTimer >= this.animationInterval){
             this.gameFrame++;
             this.animationTimer = 0;
         }
 
+        this.playerCanvasElement.style.left = this.entityPositionX + 'px';
+        this.playerCanvasElement.style.top = this.entityPositionY + 'px';
         this.ctx.clearRect(0, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT);
 
-        const animation = PlayerAnimations[state]; // e.g. PlayerAnimations["Idle"]
+        const animation = PlayerAnimations[state];
         const position = Math.floor(this.gameFrame) % animation.loc.length;
-
         const frameX = animation.loc[position].x;
         const frameY = animation.loc[position].y;
 
-        this.ctx.drawImage(
-            this.playerImage,
-            frameX, frameY,                          // crop from spritesheet
-            PlayerSize._WIDTH, PlayerSize._HEIGHT,   // crop size
-            0, 0,                                    // draw position on canvas
-            PlayerSize._WIDTH, PlayerSize._HEIGHT    // draw size
-        );
+        this.ctx.save();
+
+        if (direction === -1){
+            this.ctx.scale(-1, 1);
+            this.ctx.drawImage(
+                this.playerImage,
+                frameX, frameY,
+                PlayerSize._WIDTH, PlayerSize._HEIGHT,
+                -PlayerSize._WIDTH, 0,                  // negative x to compensate for flip
+                PlayerSize._WIDTH, PlayerSize._HEIGHT
+            );
+        } else {
+            this.ctx.drawImage(
+                this.playerImage,
+                frameX, frameY,
+                PlayerSize._WIDTH, PlayerSize._HEIGHT,
+                0, 0,
+                PlayerSize._WIDTH, PlayerSize._HEIGHT
+            );
+        }
+
+    this.ctx.restore();
 
     }
     SetEquipment(item){
