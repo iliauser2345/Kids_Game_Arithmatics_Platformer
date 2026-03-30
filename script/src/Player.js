@@ -25,7 +25,7 @@ export class Player extends Entity{
         this.gameFrame = 0;
         this.staggerFrames = 6;
         this.playerImage = new Image();
-        this.playerImage.src = '../../assets/Knight_spritelist.png';
+        this.playerImage.src = './assets/Knight_spritelist.png';
     }
     // methods
     
