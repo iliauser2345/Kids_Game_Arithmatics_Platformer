@@ -4,7 +4,7 @@ import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
 // Constants
-import { PlayerStates,PlayerSize,PlayerAnimations, KEYS, ScreenSize } from './Constants.js';
+import { PlayerStates, PlayerSize, PlayerAnimations, KEYS, ScreenSize, PlayerPhysics } from './Constants.js';
 
 export class Player extends Entity{
     //fields
@@ -60,6 +60,8 @@ export class Player extends Entity{
     Update(delta, keysDown){
         this.HandleInput(delta, keysDown);
         this.Move(delta);            // ← Move once here, after both Handle calls
+
+        
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
     }
 
@@ -69,8 +71,9 @@ export class Player extends Entity{
     }
 
     HandleX(delta, keysDown){
-        const baseSpeed = 0.15;     // px/ms = 150 px/s
-        let velocity = keysDown[KEYS._AUX] ? baseSpeed * 1.5 : baseSpeed;
+        const velocity = keysDown[KEYS._AUX]
+            ? PlayerPhysics._BASE_SPEED * PlayerPhysics._SPRINT_MULT
+            : PlayerPhysics._BASE_SPEED;
 
         const pressedRight = !!keysDown[KEYS._RWD];
         const pressedLeft  = !!keysDown[KEYS._LWD];
@@ -85,25 +88,21 @@ export class Player extends Entity{
             this.direction = -1;
         }
 
-        if      (this.entityVelocityX === 0)                              this.SetState(PlayerStates._IDLE);
-        else if (Math.abs(this.entityVelocityX) > baseSpeed)             this.SetState(PlayerStates._RUN);
-        else                                                              this.SetState(PlayerStates._WALK);
+        if      (this.entityVelocityX === 0)                                    this.SetState(PlayerStates._IDLE);
+        else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._RUN);
+        else                                                                     this.SetState(PlayerStates._WALK);
     }
 
     HandleY(delta, keysDown){
-        const GRAVITY    =  0.0008;   // px/ms²  (~800 px/s²)
-        const JUMP_FORCE = -0.6;      // px/ms   (~600 px/s upward)
         const ground = ScreenSize._HEIGHT - PlayerSize._HEIGHT;
         const onGround = this.entityPositionY >= ground;
 
         if (keysDown[KEYS._JMP] && onGround) {
-            this.SetVelocity({ y: JUMP_FORCE });
+            this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
             this.SetState(PlayerStates._JUMP);
         } else if (!onGround) {
-            // Accumulate gravity over time
-            this.SetVelocity({ y: this.entityVelocityY + GRAVITY * delta });
+            this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
         } else {
-            // Snap to ground and stop
             this.SetVelocity({ y: 0 });
             this.entityPositionY = ground;
         }

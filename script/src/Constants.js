@@ -54,6 +54,13 @@ export const ScreenSize ={
     _HEIGHT: window.innerHeight
 }
 
+export const PlayerPhysics = {
+    _BASE_SPEED:   0.15,    // px/ms  (~150 px/s)
+    _SPRINT_MULT:  1.5,
+    _GRAVITY:      0.0016,  // px/ms² (~800 px/s²)
+    _JUMP_FORCE:  -0.6,     // px/ms  (~600 px/s upward)
+}
+
 /*****************************************
  * Allows you to input the location of   *
  * the correct image of the sprite sheet *
