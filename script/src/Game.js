@@ -4,14 +4,14 @@ import { Window } from './Window.js';
 import { Entity } from './Entity.js';
 import { Enemy } from './Enemy.js';
 import { Player } from './Player.js';
-import { PlayerStates,PlayerAnimations,PlayerSize } from './Constants.js';
+import { PlayerStates,PlayerAnimations,PlayerSize, ScreenSize } from './Constants.js';
 
 export class Game{
 
     constructor(){
         this.parser = new Parser();
         this.world = new World();
-        this.player = new Player();
+        this.player = new Player({yas:ScreenSize._HEIGHT-PlayerSize._HEIGHT});
         this.window = new Window();
         this.loopId = null;
         this.lastTime = 0;

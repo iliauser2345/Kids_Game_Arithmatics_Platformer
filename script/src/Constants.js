@@ -49,6 +49,11 @@ export const PlayerSize ={
     _HEIGHT: 130
 }
 
+export const ScreenSize ={
+    _WIDTH: window.innerWidth,
+    _HEIGHT: window.innerHeight
+}
+
 /*****************************************
  * Allows you to input the location of   *
  * the correct image of the sprite sheet *

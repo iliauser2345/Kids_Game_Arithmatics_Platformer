@@ -4,7 +4,7 @@ import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
 // Constants
-import { PlayerStates,PlayerSize,PlayerAnimations, KEYS } from './Constants.js';
+import { PlayerStates,PlayerSize,PlayerAnimations, KEYS, ScreenSize } from './Constants.js';
 
 export class Player extends Entity{
     //fields
@@ -15,7 +15,7 @@ export class Player extends Entity{
     keysDown = {}; //::array
     
 
-    constructor(xas,yas){ //property state is a starting state when creating a player. it would change
+    constructor({xas,yas}){ //property state is a starting state when creating a player. it would change
 
         super({x:xas,y:yas,health:100});
         this.entityState=PlayerStates._IDLE;
@@ -59,11 +59,13 @@ export class Player extends Entity{
 
     Update(delta, keysDown){
         this.HandleInput(delta, keysDown);
+        this.Move(delta);            // ← Move once here, after both Handle calls
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
     }
 
     HandleInput(delta, keysDown){
         this.HandleX(delta, keysDown);
+        this.HandleY(delta, keysDown);
     }
 
     HandleX(delta, keysDown){
@@ -91,6 +93,7 @@ export class Player extends Entity{
             this.direction = -1;
 
         }
+
         if (this.entityVelocityX == 0){
             this.SetState(PlayerStates._IDLE);
         } else if (this.entityVelocityX > baseSpeed || this.entityVelocityX < -baseSpeed){
@@ -99,6 +102,18 @@ export class Player extends Entity{
             this.SetState(PlayerStates._WALK);
         }
         this.Move();
+
+    }
+
+    HandleY(delta, keysDown){
+        if (keysDown[KEYS._JMP] && this.entityVelocityY === 0){
+            this.SetVelocity({y:-100});
+        } else if (this.entityPositionY < (ScreenSize._HEIGHT-PlayerSize._HEIGHT)){
+            this.SetVelocity({y:(this.entityVelocityY+10)});     
+        } else if (this.entityPositionY>(ScreenSize._HEIGHT-PlayerSize._HEIGHT)){
+            this.MoveTo({yas:ScreenSize._HEIGHT-PlayerSize._HEIGHT});
+        }
+        this.Move()
     }
 
     SetState(state){

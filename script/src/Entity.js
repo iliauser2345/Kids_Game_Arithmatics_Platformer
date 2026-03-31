@@ -29,9 +29,9 @@ export class Entity{
         this.entityPositionX=x;
         this.entityPositionY=y;        
     }
-    Move(){ // Uses entity velocity to move
-        this.entityPositionX+=this.entityVelocityX;
-        this.entityPositionY+=this.entityVelocityY;
+    Move(delta = 1){
+        this.entityPositionX += this.entityVelocityX * delta;
+        this.entityPositionY += this.entityVelocityY * delta;
     }
     SetVelocity({x = this.entityVelocityX, y = this.entityVelocityY}={}){ // Changed to be able to only change one axis at a time
         this.entityVelocityX=x;
