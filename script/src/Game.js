@@ -70,6 +70,7 @@ export class Game{
         window.PlayerStates = PlayerStates;
         window.PlayerAnimations = PlayerAnimations;
         window.PlayerSize = PlayerSize;
+        window.ScreenSize = ScreenSize;
     }
 
 }

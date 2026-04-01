@@ -52,5 +52,4 @@ export class Entity{
         console.log("VelY: ",this.entityVelocityY);
     }
     
-
 }

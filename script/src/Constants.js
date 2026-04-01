@@ -21,8 +21,9 @@ export const PlayerStates ={
     _ATTACK1: "attack1",
     _ATTACK2: "attack2",
     _ATTACK3: "attack3",
-    _ATTACK4: "attack4",
+    _PARRY: "parry",
     _JUMP: "jump",
+    _FALL: "fall",
     _HURT: "hurt",
     _DEATH: "death"
 }
@@ -46,12 +47,13 @@ export const EnviromentStates ={
 
 export const PlayerSize ={
     _WIDTH: 128,
-    _HEIGHT: 130
+    _HEIGHT: 128
 }
 
 export const ScreenSize ={
     _WIDTH: window.innerWidth,
-    _HEIGHT: window.innerHeight
+    _HEIGHT: window.innerHeight,
+    _GROUND: window.innerHeight - PlayerSize._HEIGHT
 }
 
 export const PlayerPhysics = {
@@ -66,10 +68,10 @@ export const PlayerPhysics = {
  * the correct image of the sprite sheet *
  *****************************************/
 
-function getSpriteLoc(amountOfFrames, spritesheet_row) {
+function getSpriteLoc(amountOfFrames, spritesheet_row, startFrame = 0) {
     let returnArr = [];
-    for (let i = 0; i < amountOfFrames; i++) {
-        returnArr[i] = {
+    for (let i = startFrame; i < amountOfFrames; i++) {
+        returnArr[i-startFrame] = {
             x: PlayerSize._WIDTH * i,
             y: PlayerSize._HEIGHT * spritesheet_row
         };
@@ -87,10 +89,11 @@ export const PlayerAnimations = {
     "walk":    { loc: getSpriteLoc(8, 1) },
     "run":     { loc: getSpriteLoc(7, 2) },
     "attack1": { loc: getSpriteLoc(5, 3) },
-    "attack2": { loc: getSpriteLoc(2, 4) },
+    "parry":   { loc: getSpriteLoc(2, 4) },
     "attack3": { loc: getSpriteLoc(5, 5) },
-    "attack4": { loc: getSpriteLoc(5, 6) },
-    "jump":    { loc: getSpriteLoc(6, 7) },
+    "attack3": { loc: getSpriteLoc(5, 6) },
+    "jump":    { loc: getSpriteLoc(4, 7, 3) },
+    "fall":    { loc: getSpriteLoc(6, 7, 5)},
     "hurt":    { loc: getSpriteLoc(3, 8) },
     "death":   { loc: getSpriteLoc(4, 9) }
 

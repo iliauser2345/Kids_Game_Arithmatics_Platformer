@@ -12,7 +12,7 @@ export class Player extends Entity{
     playerInventory; //::Inventory
     playerEquipment; //::Item
     playerStamina; //::int
-    keysDown = {}; //::array
+    #JumpOnce;
     
 
     constructor({xas,yas}){ //property state is a starting state when creating a player. it would change
@@ -23,13 +23,13 @@ export class Player extends Entity{
         this.playerStamina=75;
         this.playerEquipment=null;
 
+        this.animationLocked = false; // true while a one-shot animation is playing
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 200; // ms per frame
         this.playerImage = new Image();
         this.playerImage.src = './assets/Knight_spritelist.png';
         this.direction = 1; // default facing right
-        this.keysDown = {};
     }
     // methods
     
@@ -60,6 +60,7 @@ export class Player extends Entity{
     Update(delta, keysDown){
         this.HandleInput(delta, keysDown);
         this.Move(delta);            // ← Move once here, after both Handle calls
+        this.HandleAnimation();
 
         
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
@@ -87,59 +88,88 @@ export class Player extends Entity{
             this.SetVelocity({ x: -velocity });
             this.direction = -1;
         }
-
-        if      (this.entityVelocityX === 0)                                    this.SetState(PlayerStates._IDLE);
-        else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._RUN);
-        else                                                                     this.SetState(PlayerStates._WALK);
     }
 
     HandleY(delta, keysDown){
-        const ground = ScreenSize._HEIGHT - PlayerSize._HEIGHT;
-        const onGround = this.entityPositionY >= ground;
+        const onGround = this.entityPositionY >= ScreenSize._GROUND;
 
         if (keysDown[KEYS._JMP] && onGround) {
             this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
-            this.SetState(PlayerStates._JUMP);
+            this.#JumpOnce = true;
         } else if (!onGround) {
             this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
         } else {
             this.SetVelocity({ y: 0 });
-            this.entityPositionY = ground;
+            this.entityPositionY = ScreenSize._GROUND;
         }
     }
 
-    SetState(state){
-        if (state){
+    HandleAnimation(){
+
+        const airbourne = !(this.entityPositionY >= ScreenSize._GROUND);
+
+        if (!airbourne){
+            if      (this.entityVelocityX === 0) this.SetState(PlayerStates._IDLE);
+            else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._RUN);
+            else this.SetState(PlayerStates._WALK);
+        } else {
+            if (this.entityVelocityY < 0 && this.#JumpOnce){
+                this.SetState(PlayerStates._JUMP)
+            } else {
+                this.SetState(PlayerStates._FALL);
+                this.#JumpOnce = false;
+            }
+        }
+
+    }
+
+    SetState(state, once = false) {
+        if (this.animationLocked) return; // blokkeert de animation change totdat hij klaar is
+
+        if (state && state !== this.entityState) {
             this.entityState = state;
+            this.gameFrame = 0;        // start alle animaties op frame 0
+            this.animationTimer = 0;
+            this.animationLocked = once;
         }
     }
 
-    PlayPlayerAnimation(state, delta, direction){
-
-        this.animationTimer += delta; 
-        if (this.animationTimer >= this.animationInterval){
+    PlayPlayerAnimation(state, delta, direction) {
+        this.animationTimer += delta;
+        if (this.animationTimer >= this.animationInterval) {
             this.gameFrame++;
             this.animationTimer = 0;
         }
 
-        this.playerCanvasElement.style.left = this.entityPositionX + 'px';
-        this.playerCanvasElement.style.top = this.entityPositionY + 'px';
-        this.ctx.clearRect(0, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT);
-
         const animation = PlayerAnimations[state];
-        const position = Math.floor(this.gameFrame) % animation.loc.length;
+
+        // One-shot animation has completed a full cycle
+        if (this.animationLocked && this.gameFrame >= animation.loc.length) {
+            this.animationLocked = false;
+            this.SetState(PlayerStates._IDLE); // or whichever fallback state fits
+            return;
+        }
+
+        // Loop for normal states, clamp for locked one-shot states
+        const position = this.animationLocked
+            ? Math.min(this.gameFrame, animation.loc.length - 1)
+            : this.gameFrame % animation.loc.length;
+
         const frameX = animation.loc[position].x;
         const frameY = animation.loc[position].y;
 
-        this.ctx.save();
+        this.playerCanvasElement.style.left = this.entityPositionX + 'px';
+        this.playerCanvasElement.style.top  = this.entityPositionY + 'px';
+        this.ctx.clearRect(0, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT);
 
-        if (direction === -1){
+        this.ctx.save();
+        if (direction === -1) {
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(
                 this.playerImage,
                 frameX, frameY,
                 PlayerSize._WIDTH, PlayerSize._HEIGHT,
-                -PlayerSize._WIDTH, 0,                  // negative x to compensate for flip
+                -PlayerSize._WIDTH, 0,
                 PlayerSize._WIDTH, PlayerSize._HEIGHT
             );
         } else {
@@ -151,12 +181,7 @@ export class Player extends Entity{
                 PlayerSize._WIDTH, PlayerSize._HEIGHT
             );
         }
-
-    this.ctx.restore();
-
-    }
-    SetEquipment(item){
-
+        this.ctx.restore();
     }
 
 }
