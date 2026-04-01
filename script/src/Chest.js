@@ -8,7 +8,7 @@ export class Chest extends Entity{
 
 
     constructor(){
-        super(0,0,null)
+        super({x:0,y:0,health:null})
         this.contents=new Inventory(10);
         
 

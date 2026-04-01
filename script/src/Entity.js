@@ -48,7 +48,7 @@ export class Entity{
         console.log("Health: ",this.entityHealth);
         console.log("PosX: ",this.entityPositionX);
         console.log("PosY: ",this.entityPositionY);
-        console.log("VelX: ",this.entityVelocityY);
+        console.log("VelX: ",this.entityVelocityX);
         console.log("VelY: ",this.entityVelocityY);
     }
     

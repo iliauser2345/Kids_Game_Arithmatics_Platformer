@@ -5,8 +5,8 @@ export class Enemy extends Entity{
     enemyName;
     enemyType;
 
-    constructor(health,name,type,EnemyEq){
-        super(x,y,health);
+    constructor(x,y,health,name,type,EnemyEq){
+        super({x:x, y:y, health: health});
         this.enemyEquipment=null;
         this.enemyName=name;
         this.enemyType=type;
