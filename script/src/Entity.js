@@ -1,3 +1,4 @@
+import { WorldConstants } from "./Constants.js";
 export class Entity{
 
     //fields
@@ -7,6 +8,7 @@ export class Entity{
     entityVelocityX;
     entityVelocityY;
     entityHealth;
+    ctx;
 
 
     constructor({x=0,y=0,health=null}={}){ // Changed to be able to access default values
@@ -19,8 +21,10 @@ export class Entity{
 
     }
     // methods
-    CreateElement(){
-        
+    CreateThing({ctx, elementSizeX = WorldConstants._BLOCKSIZEX, elementSizeY = WorldConstants._BLOCKSIZEY}){
+        this.ctx = ctx;
+        this.elementSizeX = elementSizeX;
+        this.elementSizeY = elementSizeY;
     }
     SetState(state){
         this.entityState=state;
@@ -41,7 +45,7 @@ export class Entity{
         this.entityHealth=value;
     }
     UpdateHP(value){
-        this.entityHealth=+value;
+        this.entityHealth+=value;
     }
     LogStat(){
         console.log("state: ",this.entityState);

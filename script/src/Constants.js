@@ -56,6 +56,13 @@ export const ScreenSize ={
     _GROUND: window.innerHeight - PlayerSize._HEIGHT
 }
 
+export const WorldConstants ={
+    _BLOCKSIZEX: 32,
+    _BLOCKSIZEY: 32,
+    _WORLDSIZEX: ScreenSize._WIDTH,
+    _WORLDSIZEY: ScreenSize._HEIGHT
+}
+
 export const PlayerPhysics = {
     _BASE_SPEED:   0.15,    // px/ms  (~150 px/s)
     _SPRINT_MULT:  1.5,

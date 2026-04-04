@@ -63,6 +63,7 @@ Base class for everything in the game that exists in the world.. players, enemie
 | `entityPositionX/Y` | World coordinates                                 |
 | `entityVelocityX/Y` | Current speed per axis                            |
 | `entityHealth`      | HP,`null` for things that can't die             |
+| `ctx`               | The shared canvas layer context to draw onto      |
 
 ### Constructor
 
@@ -75,6 +76,7 @@ Takes `{x, y, health}` as a destructured object with defaults, so you can pass o
 - **`SetVelocity({x, y})`** — Updates velocity. Accepts partial input (only pass the axis you want to change).
 - **`SetState(state)`** — Updates `entityState`.
 - **`SetHP(value)` / `UpdateHP(value)`** — Sets or modifies HP.
+- **`CreateThing({ctx, ...})`** — No longer creates its own canvas. Takes the shared entity layer context and stores it, along with element dimensions.
 - **`LogStat()`** — Dumps current state to the console for debugging.
 
 ---
@@ -113,11 +115,11 @@ Overrides Entity's version. Resets `gameFrame` and `animationTimer` on state cha
 
 ### PlayPlayerAnimation(state, delta, direction)
 
-Handles the actual canvas rendering. Advances the frame timer, looks up the correct sprite coords from `PlayerAnimations`, and draws the frame. Handles horizontal flipping for left-facing movement using `ctx.scale(-1, 1)`.
+Handles the actual canvas rendering. Advances the frame timer, looks up the correct sprite coords from `PlayerAnimations`, and draws the frame onto the shared entity canvas at the player's world coordinates. Handles horizontal flipping for left-facing movement using `ctx.scale(-1, 1)`.
 
 ### CreateElement
 
-Creates the player's `<canvas>` element and appends it to the document body. ts needs to change later
+Gone. Player no longer owns a canvas. It gets the shared entity layer context passed in through the constructor and draws directly onto that.
 
 ---
 
@@ -167,15 +169,15 @@ The top-level class that owns everything and drives the game.
 
 ### Constructor
 
-Creates instances of `Parser`, `World`, `Window`, and `Player`. Also sets up `loopId` and `lastTime` for the game loop.
+Creates instances of `Parser`, `World`, and `Window`. Player is no longer created here since it needs the canvas layers to exist first.
 
 ### Play()
 
-Entry point. Generates the world, loads the start window, creates the player element, and kicks off the animation loop with `requestAnimationFrame`.
+Entry point. Calls `world.CreateLayers()` first, then creates the Player with the entity layer context, generates the world, loads the start window, and kicks off the animation loop with `requestAnimationFrame`.
 
 ### loop(timestamp)
 
-The main game loop, called every frame. Calculates `delta` (time since last frame in ms), then calls `player.Update()`. The world update is commented out because it doesn't exist yet, duhh
+The main game loop, called every frame. Calculates `delta` (time since last frame in ms), clears the entity layer, then calls `player.Update()`. The world update is commented out because it doesn't exist yet, duhh
 
 ### Pause() / Resume()
 
@@ -191,6 +193,21 @@ Exposes key instances (`player`, `world`, `game`) and constants to the browser's
 
 Responsible for generating and managing the game world. `GenerateWorld()` only logs a confirmation message rn.
 
+### CreateLayers()
+
+Creates 4 stacked full-screen canvases and stores their 2D contexts. Each layer has a z-index so they stack correctly.
+
+| Layer | ID           | When to redraw              |
+| ----- | ------------ | --------------------------- |
+| 0     | `background` | Once, never touch again     |
+| 1     | `world`      | On camera scroll            |
+| 2     | `entities`   | Every frame                 |
+| 3     | `hud`        | On state change             |
+
+### ClearEntityLayer()
+
+Clears the entity canvas. Called at the top of every frame in the game loop before anything draws.
+
 ---
 
 ## Window.js
@@ -201,6 +218,7 @@ Handles loading different UI screens (start menu, death screen, win screen, etc.
 
 ## Changelog
 
-| Date       | Description                   |
-| ---------- | ----------------------------- |
-| 01/04/2026 | Initial documentation written |
+| Date       | Description                                                |
+| ---------- | -----------------------------                              |
+| 01/04/2026 | Initial documentation written                              |
+| 04/04/2026 | Massively changed how we are going to handle DOM rendering |

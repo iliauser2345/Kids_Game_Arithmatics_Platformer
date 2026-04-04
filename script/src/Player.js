@@ -1,5 +1,4 @@
 // Classes
-
 import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
@@ -13,56 +12,31 @@ export class Player extends Entity{
     playerEquipment; //::Item
     playerStamina; //::int
     #JumpOnce;
-    
 
-    constructor({xas,yas}){ //property state is a starting state when creating a player. it would change
-
+    constructor({ xas, yas, ctx }) {
         super({x:xas,y:yas,health:100});
         this.entityState=PlayerStates._IDLE;
         this.playerInventory=new Inventory(5);
         this.playerStamina=75;
         this.playerEquipment=null;
 
-        this.animationLocked = false; // true while a one-shot animation is playing
+        // Shared entity layer context passed in from World
+        this.ctx = ctx;
+
+        this.animationLocked = false;
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 200; // ms per frame
         this.playerImage = new Image();
         this.playerImage.src = './assets/Knight_spritelist.png';
-        this.direction = 1; // default facing right
+        this.direction = 1; // 1 = right, -1 = left
     }
     // methods
-    
-    /*
-        What player must do:
-            Update HP
-            Update inventory
-            Play Animations
-                --Idle
-                --Walk
-                --Run
-                --Attack 1, 2, 3, 4
-                --Jump
-                --Hurt
-                --Die
-     */
-    CreateElement(){ // Deze mischien ook in Entity.js hebben zodat we polymorphism kunnen gebruiken
-        this.playerCanvasElement = document.createElement('canvas');
-        this.playerCanvasElement.id = 'player';
-        this.playerCanvasElement.width = PlayerSize._WIDTH;
-        this.playerCanvasElement.height = PlayerSize._HEIGHT;
-        this.playerCanvasElement.style.position = 'absolute'
-        document.body.appendChild(this.playerCanvasElement);
 
-        this.ctx = this.playerCanvasElement.getContext('2d'); // need this to draw
-    }
-
-    Update(delta, keysDown){
+    Update(delta, keysDown) {
         this.HandleInput(delta, keysDown);
-        this.Move(delta);            // ← Move once here, after both Handle calls
+        this.Move(delta);
         this.HandleAnimation();
-
-        
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
     }
 
@@ -114,13 +88,12 @@ export class Player extends Entity{
             else this.SetState(PlayerStates._WALK);
         } else {
             if (this.entityVelocityY < 0 && this.#JumpOnce){
-                this.SetState(PlayerStates._JUMP)
+                this.SetState(PlayerStates._JUMP);
             } else {
                 this.SetState(PlayerStates._FALL);
                 this.#JumpOnce = false;
             }
         }
-
     }
 
     SetState(state, once = false) {
@@ -158,21 +131,14 @@ export class Player extends Entity{
         const frameX = animation.loc[position].x;
         const frameY = animation.loc[position].y;
 
-        this.playerCanvasElement.style.left = this.entityPositionX + 'px';
-        this.playerCanvasElement.style.top  = this.entityPositionY + 'px';
-        this.ctx.clearRect(0, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT);
-
+        // Draw onto the shared entity canvas at the player's world position
+        
         this.ctx.save();
+
         if (direction === -1) {
+            // De horizontale flip
+            this.ctx.translate(this.entityPositionX + PlayerSize._WIDTH, this.entityPositionY);
             this.ctx.scale(-1, 1);
-            this.ctx.drawImage(
-                this.playerImage,
-                frameX, frameY,
-                PlayerSize._WIDTH, PlayerSize._HEIGHT,
-                -PlayerSize._WIDTH, 0,
-                PlayerSize._WIDTH, PlayerSize._HEIGHT
-            );
-        } else {
             this.ctx.drawImage(
                 this.playerImage,
                 frameX, frameY,
@@ -180,8 +146,16 @@ export class Player extends Entity{
                 0, 0,
                 PlayerSize._WIDTH, PlayerSize._HEIGHT
             );
+        } else {
+            this.ctx.drawImage(
+                this.playerImage,
+                frameX, frameY,
+                PlayerSize._WIDTH, PlayerSize._HEIGHT,
+                this.entityPositionX, this.entityPositionY,
+                PlayerSize._WIDTH, PlayerSize._HEIGHT
+            );
         }
+
         this.ctx.restore();
     }
-
 }

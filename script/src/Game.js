@@ -11,7 +11,7 @@ export class Game{
     constructor(){
         this.parser = new Parser();
         this.world = new World();
-        this.player = new Player({yas:ScreenSize._HEIGHT-PlayerSize._HEIGHT});
+        this.player = null;
         this.window = new Window();
         this.loopId = null;
         this.lastTime = 0;
@@ -30,35 +30,47 @@ export class Game{
             //    4.2 dynamically load in map parts beyond visible screen once reached
 
 
-    Play(){
-        this.world.GenerateWorld();
-        this.window.LoadWindow("start");
-        this.player.CreateElement();
+    Play() {
+        // Maak de layers
+        this.world.CreateLayers();
 
-        this.loopId = requestAnimationFrame(this.loop.bind(this)); // .bind(this) is voor een bugfix, een arrowfunction kan ook als fix dienen.
+        // Hier maken we de player, en we geven de ctx door zodat player zichzelf kan tekenen
+        this.player = new Player({
+            xas: 0,
+            yas: ScreenSize._GROUND,
+            ctx: this.world.entityCtx
+        });
+
+        // Doet nog niet echt iets
+        this.world.GenerateWorld();
+
+        // Useless
+        this.window.LoadWindow("start");
+
+        this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
-    
+
     loop(timestamp){
         if (!this.lastTime) this.lastTime = timestamp;
         const delta = (timestamp - this.lastTime);
         this.lastTime = timestamp;
 
-        // vv Hieronder komen de update methods vv
+        this.world.ClearEntityLayer();
+
         this.player.Update(delta, this.parser.getKeysArray());
-        // this.world.Update()
 
+        // this.world.Update() — future: scroll/update tile layer
 
-        this.loopId = requestAnimationFrame(this.loop.bind(this)); // hier ook .bind
+        this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
 
-
     Pause(){
-        cancelAnimationFrame(this.loopId); // pauseert de loop
+        cancelAnimationFrame(this.loopId);
     }
 
     Resume(){
         this.lastTime = 0;
-        this.loopId = requestAnimationFrame(this.loop.bind(this)); //en hier
+        this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
 
     Debug(){
