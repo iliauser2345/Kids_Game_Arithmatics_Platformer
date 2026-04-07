@@ -218,7 +218,7 @@ Handles loading different UI screens (start menu, death screen, win screen, etc.
 
 ## Changelog
 
-| Date       | Description                                                |
-| ---------- | -----------------------------                              |
-| 01/04/2026 | Initial documentation written                              |
-| 04/04/2026 | Massively changed how we are going to handle DOM rendering |
+|Version        | Date       | Description                                                |
+| ------------- | ---------- | -----------------------------                              |
+|26.0.1.0       | 01/04/2026 | Initial documentation written                              |
+|26.0.1.1       | 04/04/2026 | Massively changed how we are going to handle DOM rendering |
