@@ -4,7 +4,7 @@ import { Window } from './Window.js';
 import { Entity } from './Entity.js';
 import { Enemy } from './Enemy.js';
 import { Player } from './Player.js';
-import { PlayerStates,PlayerAnimations,PlayerSize, ScreenSize } from './Constants.js';
+import { PlayerStates,PlayerAnimations,PlayerSize, ScreenSize, WorldConstants } from './Constants.js';
 
 export class Game{
 
@@ -37,7 +37,7 @@ export class Game{
         // Hier maken we de player, en we geven de ctx door zodat player zichzelf kan tekenen
         this.player = new Player({
             xas: 0,
-            yas: ScreenSize._GROUND,
+            yas: WorldConstants._GROUND,
             ctx: this.world.entityCtx
         });
 

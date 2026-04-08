@@ -3,7 +3,7 @@ import { Inventory } from './Inventory.js';
 import { Entity } from './Entity.js';
 
 // Constants
-import { PlayerStates, PlayerSize, PlayerAnimations, KEYS, ScreenSize, PlayerPhysics } from './Constants.js';
+import { PlayerStates, PlayerSize, PlayerAnimations, KEYS, ScreenSize, PlayerPhysics, Images, WorldConstants } from './Constants.js';
 
 export class Player extends Entity{
     //fields
@@ -28,7 +28,7 @@ export class Player extends Entity{
         this.animationTimer = 0;
         this.animationInterval = 200; // ms per frame
         this.playerImage = new Image();
-        this.playerImage.src = './assets/Knight_spritelist.png';
+        this.playerImage = Images._PLAYER;
         this.direction = 1; // 1 = right, -1 = left
     }
     // methods
@@ -65,7 +65,7 @@ export class Player extends Entity{
     }
 
     HandleY(delta, keysDown){
-        const onGround = this.entityPositionY >= ScreenSize._GROUND;
+        const onGround = this.entityPositionY >= WorldConstants._GROUND;
 
         if (keysDown[KEYS._JMP] && onGround) {
             this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
@@ -74,13 +74,13 @@ export class Player extends Entity{
             this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
         } else {
             this.SetVelocity({ y: 0 });
-            this.entityPositionY = ScreenSize._GROUND;
+            this.entityPositionY = WorldConstants._GROUND;
         }
     }
 
     HandleAnimation(){
 
-        const airbourne = !(this.entityPositionY >= ScreenSize._GROUND);
+        const airbourne = !(this.entityPositionY >= WorldConstants._GROUND);
 
         if (!airbourne){
             if      (this.entityVelocityX === 0) this.SetState(PlayerStates._IDLE);

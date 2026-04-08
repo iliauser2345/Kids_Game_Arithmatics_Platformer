@@ -15,6 +15,7 @@
 - [Item.js](#itemjs)
 - [Parser.js](#parserjs)
 - [Game.js](#gamejs)
+- [Tile.js](#tilejs)
 - [World.js](#worldjs)
 - [Window.js](#windowjs)
 - [Changelog](#changelog)
@@ -35,7 +36,11 @@ String constants for the possible states of the player, NPCs, and environment ob
 
 ### PlayerSize / ScreenSize
 
-Pixel dimensions of the player sprite and the game screen. `ScreenSize._GROUND` is a derived value the Y coordinate of the ground (bottom of screen minus player height).
+Pixel dimensions of the player sprite and the game screen. `ScreenSize` holds raw screen width and height only.
+
+### WorldConstants
+
+World dimensions and tile size. Also holds `_GROUND` as a computed getter — it derives the player's ground Y position from the tile grid formula `(rows - 1) * blockSize - playerHeight`, keeping it always in sync with where the ground tile actually renders.
 
 ### PlayerPhysics
 
@@ -48,6 +53,14 @@ Maps each state name (e.g. `"walk"`, `"jump"`) to an array of sprite frame coord
 ### getSpriteLoc(amountOfFrames, spritesheet_row, startFrame)
 
 Helper function that calculates pixel coordinates for each frame on the spritesheet. `startFrame` lets you skip the first few frames of a row (used for the jump/fall frames which share a row).
+
+### BlockLoc
+
+A `Proxy`-backed lookup table mapping tile names (e.g. `"grassTL"`) to their `{x, y}` pixel coordinates on the tileset. Internally stores each entry as a compact `[col, row]` pair and converts it on access via `tile()`. Throws an error if an unknown tile name is requested.
+
+### tile(col, row)
+
+Helper that converts a `[col, row]` grid position into a pixel `{x, y}` offset into the tileset image.
 
 ---
 
@@ -76,7 +89,7 @@ Takes `{x, y, health}` as a destructured object with defaults, so you can pass o
 - **`SetVelocity({x, y})`** — Updates velocity. Accepts partial input (only pass the axis you want to change).
 - **`SetState(state)`** — Updates `entityState`.
 - **`SetHP(value)` / `UpdateHP(value)`** — Sets or modifies HP.
-- **`CreateThing({ctx, ...})`** — No longer creates its own canvas. Takes the shared entity layer context and stores it, along with element dimensions.
+- **`CreateThing({ctx, ...})`** — Takes the shared entity layer context and stores it, along with element dimensions.
 - **`LogStat()`** — Dumps current state to the console for debugging.
 
 ---
@@ -92,7 +105,7 @@ Extends `Entity`. The main character. Handles input, movement, animation, and re
 | `playerInventory` | The player's `Inventory` (5 slots)                           |
 | `playerEquipment` | Currently held/equipped item                                   |
 | `playerStamina`   | Stamina (not yet implemented)                                  |
-| `#JumpOnce`       | Private flag to track if a jump was initiated, useless tho     |
+| `#JumpOnce`       | Private flag to track if a jump was initiated                  |
 | `animationLocked` | Prevents state changes mid-animation (for one-shot animations) |
 | `gameFrame`       | Current frame index of the active animation                    |
 | `direction`       | `1` = facing right, `-1` = facing left                     |
@@ -103,7 +116,7 @@ Called every frame by the game loop. Runs input handling, then movement, then an
 
 ### HandleX / HandleY
 
-Separate methods for horizontal and vertical movement logic. HandleX reads left/right/sprint keys and sets X velocity. HandleY handles jumping and gravity. checks if the player is grounded before allowing another jump.
+Separate methods for horizontal and vertical movement logic. HandleX reads left/right/sprint keys and sets X velocity. HandleY handles jumping and gravity, and checks if the player is grounded before allowing another jump.
 
 ### HandleAnimation
 
@@ -116,10 +129,6 @@ Overrides Entity's version. Resets `gameFrame` and `animationTimer` on state cha
 ### PlayPlayerAnimation(state, delta, direction)
 
 Handles the actual canvas rendering. Advances the frame timer, looks up the correct sprite coords from `PlayerAnimations`, and draws the frame onto the shared entity canvas at the player's world coordinates. Handles horizontal flipping for left-facing movement using `ctx.scale(-1, 1)`.
-
-### CreateElement
-
-Gone. Player no longer owns a canvas. It gets the shared entity layer context passed in through the constructor and draws directly onto that.
 
 ---
 
@@ -169,7 +178,7 @@ The top-level class that owns everything and drives the game.
 
 ### Constructor
 
-Creates instances of `Parser`, `World`, and `Window`. Player is no longer created here since it needs the canvas layers to exist first.
+Creates instances of `Parser`, `World`, and `Window`. Player is created in `Play()` since it needs the canvas layers to exist first.
 
 ### Play()
 
@@ -189,13 +198,27 @@ Exposes key instances (`player`, `world`, `game`) and constants to the browser's
 
 ---
 
+## Tile.js
+
+Extends `Entity`. Represents a single tile in the world.
+
+### Constructor
+
+Takes `{xas, yas, tileType}`. `tileType` defaults to `"grassTL"` and is stored as a private field.
+
+### Draw(ctx)
+
+Looks up the tile's sprite coordinates via `BlockLoc[tileType]` and draws it from the tileset onto the given context at the tile's world position. Draws 1px larger than the block size to prevent gap artifacts between adjacent tiles.
+
+---
+
 ## World.js
 
-Responsible for generating and managing the game world. `GenerateWorld()` only logs a confirmation message rn.
+Responsible for generating and managing the game world.
 
 ### CreateLayers()
 
-Creates 4 stacked full-screen canvases and stores their 2D contexts. Each layer has a z-index so they stack correctly.
+Creates 4 stacked full-screen canvases and stores their 2D contexts. Each layer has a z-index so they stack correctly. All layers have `imageSmoothingEnabled` disabled and `imageRendering: pixelated` set to prevent blurring on pixel art.
 
 | Layer | ID           | When to redraw              |
 | ----- | ------------ | --------------------------- |
@@ -203,6 +226,14 @@ Creates 4 stacked full-screen canvases and stores their 2D contexts. Each layer 
 | 1     | `world`      | On camera scroll            |
 | 2     | `entities`   | Every frame                 |
 | 3     | `hud`        | On state change             |
+
+### GenerateWorld()
+
+Loads the background image and builds the tile grid. Currently only generates a single ground row of tiles at the bottom of the screen. Calls `DrawTiles()` once the tileset image is ready, or immediately if it's already cached.
+
+### DrawTiles()
+
+Iterates over `this.tiles` and calls `Draw(worldCtx)` on each one. Called once after the tileset loads.
 
 ### ClearEntityLayer()
 
@@ -222,3 +253,4 @@ Handles loading different UI screens (start menu, death screen, win screen, etc.
 | ------------- | ---------- | -----------------------------                              |
 |26.0.1.0       | 01/04/2026 | Initial documentation written                              |
 |26.0.1.1       | 04/04/2026 | Massively changed how we are going to handle DOM rendering |
+|26.0.1.2       | 08/04.2026 | Rendering tiles, no collision yet. Images moved to Constants.js|

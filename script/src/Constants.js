@@ -1,3 +1,16 @@
+const createImage = (src) => {
+    const img = new Image();
+    img.src = src;
+    return img;
+};
+
+export const Images = {
+    _PLAYER: createImage('./assets/Knight_spritelist.png'),
+    _ENVIRONMENT: createImage('./assets/Tileset.png'),
+    _BACKGROUND: createImage('./assets/PLACEHOLDER_bgr_image.jpg'), // Even uitvogelen hoe dit nou echt toegepast moet worden
+
+};
+
 export const KEYS ={
     
     _LWD: "A",
@@ -52,15 +65,19 @@ export const PlayerSize ={
 
 export const ScreenSize ={
     _WIDTH: window.innerWidth,
-    _HEIGHT: window.innerHeight,
-    _GROUND: window.innerHeight - PlayerSize._HEIGHT
+    _HEIGHT: window.innerHeight
 }
 
-export const WorldConstants ={
+export const WorldConstants = {
     _BLOCKSIZEX: 32,
     _BLOCKSIZEY: 32,
     _WORLDSIZEX: ScreenSize._WIDTH,
-    _WORLDSIZEY: ScreenSize._HEIGHT
+    _WORLDSIZEY: ScreenSize._HEIGHT,
+    get _GROUND() {
+        // Same row formula as World.js: (rows - 1) * blockSize
+        const groundTileY = (Math.ceil(ScreenSize._HEIGHT / this._BLOCKSIZEY) - 1) * this._BLOCKSIZEY;
+        return groundTileY - PlayerSize._HEIGHT;
+    }
 }
 
 export const PlayerPhysics = {
@@ -75,12 +92,12 @@ export const PlayerPhysics = {
  * the correct image of the sprite sheet *
  *****************************************/
 
-function getSpriteLoc(amountOfFrames, spritesheet_row, startFrame = 0) {
+function getSpriteLoc(frames, row, w, h, startFrame = 0) {
     let returnArr = [];
-    for (let i = startFrame; i < amountOfFrames; i++) {
+    for (let i = startFrame; i < frames; i++) {
         returnArr[i-startFrame] = {
-            x: PlayerSize._WIDTH * i,
-            y: PlayerSize._HEIGHT * spritesheet_row
+            x: w * i,
+            y: h * row
         };
     }
     return returnArr;
@@ -92,16 +109,41 @@ function getSpriteLoc(amountOfFrames, spritesheet_row, startFrame = 0) {
 
 export const PlayerAnimations = {
 
-    "idle":    { loc: getSpriteLoc(6, 0) },
-    "walk":    { loc: getSpriteLoc(8, 1) },
-    "run":     { loc: getSpriteLoc(7, 2) },
-    "attack1": { loc: getSpriteLoc(5, 3) },
-    "parry":   { loc: getSpriteLoc(2, 4) },
-    "attack3": { loc: getSpriteLoc(5, 5) },
-    "attack3": { loc: getSpriteLoc(5, 6) },
-    "jump":    { loc: getSpriteLoc(4, 7, 3) },
-    "fall":    { loc: getSpriteLoc(6, 7, 5)},
-    "hurt":    { loc: getSpriteLoc(3, 8) },
-    "death":   { loc: getSpriteLoc(4, 9) }
+    "idle":    { loc: getSpriteLoc(6, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "walk":    { loc: getSpriteLoc(8, 1, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "run":     { loc: getSpriteLoc(7, 2, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "attack1": { loc: getSpriteLoc(5, 3, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "parry":   { loc: getSpriteLoc(2, 4, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "attack3": { loc: getSpriteLoc(5, 5, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "attack3": { loc: getSpriteLoc(5, 6, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "jump":    { loc: getSpriteLoc(4, 7, PlayerSize._WIDTH, PlayerSize._HEIGHT, 3) },
+    "fall":    { loc: getSpriteLoc(6, 7, PlayerSize._WIDTH, PlayerSize._HEIGHT, 5)},
+    "hurt":    { loc: getSpriteLoc(3, 8, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "death":   { loc: getSpriteLoc(4, 9, PlayerSize._WIDTH, PlayerSize._HEIGHT) }
 
 }
+
+const TILE_SIZE = WorldConstants._BLOCKSIZEX; // 32
+
+function tile(col, row) {
+    return { x: col * TILE_SIZE, y: row * TILE_SIZE };
+}
+
+export const BlockLoc = new Proxy({
+    // Grass / Dirt
+    grassTL:   [0, 0],
+    grassTM:   [1, 0],
+    grassTR:   [2, 0],
+    dirtML:    [0, 1],
+    dirtMM:    [1, 1],
+    dirtMR:    [2, 1],
+    // Stone
+    stoneTL:   [5, 0],
+    stoneTM:   [6, 0],
+    // ... pendign
+}, {
+    get(target, name) {
+        if (!(name in target)) throw new Error(`Unknown tile: "${name}"`);
+        return tile(...target[name]);
+    }
+});

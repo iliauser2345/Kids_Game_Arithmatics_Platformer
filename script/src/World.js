@@ -1,11 +1,12 @@
-import { ScreenSize } from './Constants.js';
+import { ScreenSize, Images, WorldConstants } from './Constants.js';
+import { Tile } from './Tile.js';
 
 export class World{
 
     
     constructor(){
 
-        this.backgrImg="";
+        this.backgrImg = new Image();
         this.tileImg="";
         this.enemy;
 
@@ -41,12 +42,48 @@ export class World{
         canvas.style.left     = '0';
         canvas.style.top      = '0';
         canvas.style.zIndex   = zIndex;
+        canvas.style.imageRendering = 'pixelated';
         document.body.appendChild(canvas);
-        return canvas.getContext('2d');
+        
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false; 
+        return ctx;
     }
 
     GenerateWorld() {
-        console.log("worldgenned");
+        this.backgrImg.onload = () => {
+            this.backgroundCtx.drawImage(this.backgrImg, 0, 0, ScreenSize._WIDTH, ScreenSize._HEIGHT);
+        };
+        this.backgrImg.src = "./assets/PLACEHOLDER_bgr_image.jpg";
+
+        // Build tile grid
+        this.tiles = [];
+        const cols = Math.ceil(ScreenSize._WIDTH  / WorldConstants._BLOCKSIZEX);
+        const rows = Math.ceil(ScreenSize._HEIGHT / WorldConstants._BLOCKSIZEY);
+        const groundRow = rows - 1; // bottom row = ground
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                if (row === groundRow) {
+                    this.tiles.push(new Tile({
+                        xas: Math.floor(col * WorldConstants._BLOCKSIZEX),
+                        yas: Math.floor(row * WorldConstants._BLOCKSIZEY),  
+                        tileType: "grassTM"
+                    }));
+                }
+            }
+        }
+
+        // Draw tiles once (worldCtx is static until camera scrolls)
+        Images._ENVIRONMENT.onload = () => this.DrawTiles();
+        // If already loaded (cached), draw immediately
+        if (Images._ENVIRONMENT.complete) this.DrawTiles();
+    }
+
+    DrawTiles() {
+        for (const tile of this.tiles) {
+            tile.Draw(this.worldCtx);
+        }
     }
 
     // Call each frame before entities are drawn
