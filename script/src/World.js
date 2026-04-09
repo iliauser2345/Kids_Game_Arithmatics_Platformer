@@ -55,28 +55,39 @@ export class World{
         let matrix=[];
         console.log(SCRDIMENSIONS._SCRWIDTH);
         console.log(SCRDIMENSIONS._SCRHEIGHT);
-        for (
-                let x=0;
-                x<SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH;
-                x++
-            )
-        {
-            matrix.push([]);
-            for (
-                    let y=0;
-                    y<SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT;
-                    y++
-                )
-                {
-                    matrix[x].push(x,y);
-                }
+        for (let y = 0; y < SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT; y++) {
+            let row = [];
+            for (let x = 0; x < SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH; x++) {
+                row.push([0,[SCRDIMENSIONS._SCRWIDTH-(SCRDIMENSIONS._TILEWIDTH*x), SCRDIMENSIONS._SCRHEIGHT-(SCRDIMENSIONS._TILEHEIGHT*y)]]);
+            }
+            matrix.push(row);
         }
-        console.log(matrix);
-
+        //matrix.forEach(row => console.log(row.join(' ][ ')));   
+        return matrix;
+    }
+    TilePositioning(matrix, factor, distance, amount, marge) {// matrix - grid; factor- how wide a gap would be; distance- distance between gaps; amount- amount of levels(platform) on a map; marge- distance between those platforms(in tiles)
+        for (
+            let yindex = matrix.length - 1 - marge, i = 0;
+            i < amount && yindex >= 0;
+            i++, yindex -= marge
+        ) {
+            let row = matrix[yindex];
+            for (
+                let xindex = 0;
+                xindex < row.length - 3;
+                xindex += distance + factor 
+            ) {
+                for (let j = 0; j < 4; j++) {
+                    row[xindex + j][0] = 1;
+                }
+            }
+        }
+        matrix.forEach(row => console.log(row.join(' ')));
     }
 
     GenerateWorld() {
-        this.SetUpGrid();
+        let matrix=this.SetUpGrid();
+        this.TilePositioning(matrix,4,5,4,4);
         this.backgrImg.onload = () => {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, ScreenSize._WIDTH, ScreenSize._HEIGHT);
         };

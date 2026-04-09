@@ -5,7 +5,17 @@ const createImage = (src) => {
 };
 
 export const Images = {
-    _PLAYER: createImage('./assets/Knight_spritelist.png'),
+    
+    _PLAYER_IDLE:    createImage('./assets/Fancy_Knight/_Idle.png'),
+    _PLAYER_WALK:    createImage('./assets/Fancy_Knight/_Run.png'),
+    _PLAYER_RUN:     createImage('./assets/Fancy_Knight/_Dash.png'),
+    _PLAYER_ATTACK1: createImage('./assets/Fancy_Knight/_Attack.png'),
+    _PLAYER_PARRY:   createImage('./assets/Fancy_Knight/_Attack2.png'),
+    _PLAYER_JUMP:    createImage('./assets/Fancy_Knight/_Jump.png'),
+    _PLAYER_FALL:    createImage('./assets/Fancy_Knight/_Fall.png'),
+    _PLAYER_HURT:    createImage('./assets/Fancy_Knight/_Hit.png'),
+    _PLAYER_DEATH:   createImage('./assets/Fancy_Knight/_Death.png'),
+
     _ENVIRONMENT: createImage('./assets/Tileset.png'),
     _BACKGROUND: createImage('./assets/PLACEHOLDER_bgr_image.jpg'), // Even uitvogelen hoe dit nou echt toegepast moet worden
 
@@ -28,10 +38,10 @@ export const KEYS ={
 
 export const SCRDIMENSIONS ={
 
-    _SCRHEIGHT: window.screen.availHeight,
-    _SCRWIDTH:  window.screen.availWidth,
-    _TILEHEIGHT: 36, //px
-    _TILEWIDTH:  40 //px
+    _SCRHEIGHT: 1080,
+    _SCRWIDTH:  1920,
+    _TILEHEIGHT: 32, //px
+    _TILEWIDTH:  32 //px
 }
 
 export const PlayerStates ={
@@ -67,13 +77,13 @@ export const EnviromentStates ={
 }
 
 export const PlayerSize ={
-    _WIDTH: 128,
-    _HEIGHT: 128
+    _WIDTH: 120,
+    _HEIGHT: 80
 }
 
 export const ScreenSize ={
-    _WIDTH: window.innerWidth,
-    _HEIGHT: window.innerHeight
+    _WIDTH: 1920,
+    _HEIGHT: 1080
 }
 
 export const WorldConstants = {
@@ -92,7 +102,7 @@ export const PlayerPhysics = {
     _BASE_SPEED:   0.15,    // px/ms  (~150 px/s)
     _SPRINT_MULT:  1.5,
     _GRAVITY:      0.0016,  // px/ms² (~800 px/s²)
-    _JUMP_FORCE:  -0.6,     // px/ms  (~600 px/s upward)
+    _JUMP_FORCE:  -0.6,     // px/ms  (~600 px/s upward) // jumps 118 px high
 }
 
 /*****************************************
@@ -117,19 +127,18 @@ function getSpriteLoc(frames, row, w, h, startFrame = 0) {
 
 export const PlayerAnimations = {
 
-    "idle":    { loc: getSpriteLoc(6, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "walk":    { loc: getSpriteLoc(8, 1, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "run":     { loc: getSpriteLoc(7, 2, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "attack1": { loc: getSpriteLoc(5, 3, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "parry":   { loc: getSpriteLoc(2, 4, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "attack3": { loc: getSpriteLoc(5, 5, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "attack3": { loc: getSpriteLoc(5, 6, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "jump":    { loc: getSpriteLoc(4, 7, PlayerSize._WIDTH, PlayerSize._HEIGHT, 3) },
-    "fall":    { loc: getSpriteLoc(6, 7, PlayerSize._WIDTH, PlayerSize._HEIGHT, 5)},
-    "hurt":    { loc: getSpriteLoc(3, 8, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "death":   { loc: getSpriteLoc(4, 9, PlayerSize._WIDTH, PlayerSize._HEIGHT) }
+    "idle":    { image: Images._PLAYER_IDLE,    loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "walk":    { image: Images._PLAYER_WALK,    loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "run":     { image: Images._PLAYER_RUN ,    loc: getSpriteLoc(2, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "attack1": { image: Images._PLAYER_ATTACK1, loc: getSpriteLoc(4, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "parry":   { image: Images._PLAYER_PARRY,   loc: getSpriteLoc(6, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "jump":    { image: Images._PLAYER_JUMP,    loc: getSpriteLoc(3, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "fall":    { image: Images._PLAYER_FALL,    loc: getSpriteLoc(3, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT)},
+    "hurt":    { image: Images._PLAYER_HURT,    loc: getSpriteLoc(1, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "death":   { image: Images._PLAYER_DEATH,   loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) }
 
 }
+
 
 const TILE_SIZE = WorldConstants._BLOCKSIZEX; // 32
 

@@ -26,9 +26,7 @@ export class Player extends Entity{
         this.animationLocked = false;
         this.gameFrame = 0;
         this.animationTimer = 0;
-        this.animationInterval = 200; // ms per frame
-        this.playerImage = new Image();
-        this.playerImage = Images._PLAYER;
+        this.animationInterval = 50; // ms per frame
         this.direction = 1; // 1 = right, -1 = left
     }
     // methods
@@ -38,6 +36,7 @@ export class Player extends Entity{
         this.Move(delta);
         this.HandleAnimation();
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
+       // console.log(this.entityPositionX+" "+this.entityPositionY);
     }
 
     HandleInput(delta, keysDown){
@@ -140,7 +139,7 @@ export class Player extends Entity{
             this.ctx.translate(this.entityPositionX + PlayerSize._WIDTH, this.entityPositionY);
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(
-                this.playerImage,
+                animation.image,
                 frameX, frameY,
                 PlayerSize._WIDTH, PlayerSize._HEIGHT,
                 0, 0,
@@ -148,7 +147,7 @@ export class Player extends Entity{
             );
         } else {
             this.ctx.drawImage(
-                this.playerImage,
+                animation.image,
                 frameX, frameY,
                 PlayerSize._WIDTH, PlayerSize._HEIGHT,
                 this.entityPositionX, this.entityPositionY,
@@ -158,4 +157,4 @@ export class Player extends Entity{
 
         this.ctx.restore();
     }
-}
+}   

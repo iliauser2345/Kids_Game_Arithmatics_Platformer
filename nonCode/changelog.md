@@ -227,6 +227,14 @@ Creates 4 stacked full-screen canvases and stores their 2D contexts. Each layer 
 | 2     | `entities`   | Every frame                 |
 | 3     | `hud`        | On state change             |
 
+### SetUpGrid()::array
+
+Creates an array based on world dimensions. contains y-amount of rows with x-amount of elements in. each element contains an intereger and a coordinate on screen [0,[0,0]]. Intereger [0] is an identification of a tile that should be placed in this place. Array is not exactly a 1920x1080 but rather much smaller and it's x and y sizes are downscaled by /32 which resambles more of a grid.
+
+### TilePositioning(matrix, factor, amount, marge)::void
+
+Selects amount of y-indexed arrays and modifies [0] value of each element to a 1 for tile placement.
+
 ### GenerateWorld()
 
 Loads the background image and builds the tile grid. Currently only generates a single ground row of tiles at the bottom of the screen. Calls `DrawTiles()` once the tileset image is ready, or immediately if it's already cached.
