@@ -1,11 +1,13 @@
-import { ScreenSize, Images, WorldConstants } from './Constants.js';
+import { ScreenSize, Images, WorldConstants, SCRDIMENSIONS } from './Constants.js';
 import { Tile } from './Tile.js';
 
 export class World{
+    
 
     
     constructor(){
 
+        this.WorldGrid = [];
         this.backgrImg = new Image();
         this.tileImg="";
         this.enemy;
@@ -49,8 +51,32 @@ export class World{
         ctx.imageSmoothingEnabled = false; 
         return ctx;
     }
+    SetUpGrid(){
+        let matrix=[];
+        console.log(SCRDIMENSIONS._SCRWIDTH);
+        console.log(SCRDIMENSIONS._SCRHEIGHT);
+        for (
+                let x=0;
+                x<SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH;
+                x++
+            )
+        {
+            matrix.push([]);
+            for (
+                    let y=0;
+                    y<SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT;
+                    y++
+                )
+                {
+                    matrix[x].push(x,y);
+                }
+        }
+        console.log(matrix);
+
+    }
 
     GenerateWorld() {
+        this.SetUpGrid();
         this.backgrImg.onload = () => {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, ScreenSize._WIDTH, ScreenSize._HEIGHT);
         };

@@ -26,6 +26,14 @@ export const KEYS ={
 
 }
 
+export const SCRDIMENSIONS ={
+
+    _SCRHEIGHT: window.screen.availHeight,
+    _SCRWIDTH:  window.screen.availWidth,
+    _TILEHEIGHT: 36, //px
+    _TILEWIDTH:  40 //px
+}
+
 export const PlayerStates ={
 
     _IDLE: "idle",
