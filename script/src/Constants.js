@@ -82,8 +82,8 @@ export const PlayerSize ={
 }
 
 export const ScreenSize ={
-    _WIDTH: 1920,
-    _HEIGHT: 1080
+    _WIDTH: window.screen.availWidth,
+    _HEIGHT: window.screen.availHeight
 }
 
 export const WorldConstants = {
@@ -91,9 +91,11 @@ export const WorldConstants = {
     _BLOCKSIZEY: 32,
     _WORLDSIZEX: ScreenSize._WIDTH,
     _WORLDSIZEY: ScreenSize._HEIGHT,
+    _GRIDSIZEX: SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH,
+    _GRIDSIZEY: SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT,
     get _GROUND() {
         // Same row formula as World.js: (rows - 1) * blockSize
-        const groundTileY = (Math.ceil(ScreenSize._HEIGHT / this._BLOCKSIZEY) - 1) * this._BLOCKSIZEY;
+        const groundTileY = (Math.ceil(SCRDIMENSIONS._SCRHEIGHT / this._BLOCKSIZEY) - 1) * this._BLOCKSIZEY;
         return groundTileY - PlayerSize._HEIGHT;
     }
 }

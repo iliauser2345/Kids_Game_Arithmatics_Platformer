@@ -38,8 +38,8 @@ export class World{
     CreateLayer(id, zIndex) {
         const canvas = document.createElement('canvas');
         canvas.id = id;
-        canvas.width  = ScreenSize._WIDTH;
-        canvas.height = ScreenSize._HEIGHT;
+        canvas.width  = SCRDIMENSIONS._SCRWIDTH;
+        canvas.height = SCRDIMENSIONS._SCRHEIGHT;
         canvas.style.position = 'absolute';
         canvas.style.left     = '0';
         canvas.style.top      = '0';
@@ -55,9 +55,9 @@ export class World{
         let matrix=[];
         console.log(SCRDIMENSIONS._SCRWIDTH);
         console.log(SCRDIMENSIONS._SCRHEIGHT);
-        for (let y = 0; y < SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT; y++) {
+        for (let y = 0; y <= WorldConstants._GRIDSIZEY; y++) {
             let row = [];
-            for (let x = 0; x < SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH; x++) {
+            for (let x = 0; x <= WorldConstants._GRIDSIZEX; x++) {
                 row.push([0,[SCRDIMENSIONS._SCRWIDTH-(SCRDIMENSIONS._TILEWIDTH*x), SCRDIMENSIONS._SCRHEIGHT-(SCRDIMENSIONS._TILEHEIGHT*y)]]);
             }
             matrix.push(row);
@@ -82,7 +82,7 @@ export class World{
                 }
             }
         }
-        matrix.forEach(row => console.log(row.join(' ')));
+        matrix.forEach(row => console.log(row.join(' ][ ')));
     }
 
     GenerateWorld() {
@@ -95,8 +95,8 @@ export class World{
 
         // Build tile grid
         this.tiles = [];
-        const cols = Math.ceil(ScreenSize._WIDTH  / WorldConstants._BLOCKSIZEX);
-        const rows = Math.ceil(ScreenSize._HEIGHT / WorldConstants._BLOCKSIZEY);
+        const cols = Math.ceil(SCRDIMENSIONS._SCRWIDTH  / WorldConstants._BLOCKSIZEX);
+        const rows = Math.ceil(SCRDIMENSIONS._SCRHEIGHT / WorldConstants._BLOCKSIZEY);
         const groundRow = rows - 1; // bottom row = ground
 
         for (let row = 0; row < rows; row++) {
