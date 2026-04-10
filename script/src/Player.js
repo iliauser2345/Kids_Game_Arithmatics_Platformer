@@ -83,7 +83,7 @@ export class Player extends Entity{
 
         if (!airbourne){
             if      (this.entityVelocityX === 0) this.SetState(PlayerStates._IDLE);
-            else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._RUN);
+            else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._DASH);
             else this.SetState(PlayerStates._WALK);
         } else {
             if (this.entityVelocityY < 0 && this.#JumpOnce){

@@ -16,7 +16,10 @@ export class Parser{
 
     addToKeysDown(e) {
         const key = this.parseKey(e);
-        if (key !== null) this.keysDown[key] = true;
+        if (key !== null) {
+            e.preventDefault();
+            this.keysDown[key] = true;
+        }
         console.log(this.keysDown);
     }
 

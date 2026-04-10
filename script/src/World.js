@@ -55,10 +55,12 @@ export class World{
         let matrix=[];
         console.log(SCRDIMENSIONS._SCRWIDTH);
         console.log(SCRDIMENSIONS._SCRHEIGHT);
-        for (let y = 0; y <= WorldConstants._GRIDSIZEY; y++) {
+        for (let y = 0; y < WorldConstants._GRIDSIZEY; y++) {
             let row = [];
-            for (let x = 0; x <= WorldConstants._GRIDSIZEX; x++) {
-                row.push([0,[SCRDIMENSIONS._SCRWIDTH-(SCRDIMENSIONS._TILEWIDTH*x), SCRDIMENSIONS._SCRHEIGHT-(SCRDIMENSIONS._TILEHEIGHT*y)]]);
+            let IsGround = 0;
+            if (y == WorldConstants._GRIDSIZEY - 1){IsGround = 1}
+            for (let x = 0; x < WorldConstants._GRIDSIZEX; x++) {
+                row.push(new Tile({xas:SCRDIMENSIONS._TILEWIDTH*x, yas:SCRDIMENSIONS._TILEHEIGHT*y, tileINDX:IsGround}));
             }
             matrix.push(row);
         }
@@ -78,38 +80,20 @@ export class World{
                 xindex += distance + factor 
             ) {
                 for (let j = 0; j < 4; j++) {
-                    row[xindex + j][0] = 1;
+                    row[xindex + j].tileINDX = 1;
                 }
             }
         }
-        matrix.forEach(row => console.log(row.join(' ][ ')));
+        matrix.forEach(row => console.log(row.map(tile => tile.tileINDX).join(' ')));
     }
 
     GenerateWorld() {
-        let matrix=this.SetUpGrid();
-        this.TilePositioning(matrix,4,5,4,4);
+        this.matrix=this.SetUpGrid();
+        this.TilePositioning(this.matrix,4,5,4,4);
         this.backgrImg.onload = () => {
-            this.backgroundCtx.drawImage(this.backgrImg, 0, 0, ScreenSize._WIDTH, ScreenSize._HEIGHT);
+            this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         };
         this.backgrImg.src = "./assets/PLACEHOLDER_bgr_image.jpg";
-
-        // Build tile grid
-        this.tiles = [];
-        const cols = Math.ceil(SCRDIMENSIONS._SCRWIDTH  / WorldConstants._BLOCKSIZEX);
-        const rows = Math.ceil(SCRDIMENSIONS._SCRHEIGHT / WorldConstants._BLOCKSIZEY);
-        const groundRow = rows - 1; // bottom row = ground
-
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                if (row === groundRow) {
-                    this.tiles.push(new Tile({
-                        xas: Math.floor(col * WorldConstants._BLOCKSIZEX),
-                        yas: Math.floor(row * WorldConstants._BLOCKSIZEY),  
-                        tileType: "grassTM"
-                    }));
-                }
-            }
-        }
 
         // Draw tiles once (worldCtx is static until camera scrolls)
         Images._ENVIRONMENT.onload = () => this.DrawTiles();
@@ -118,13 +102,15 @@ export class World{
     }
 
     DrawTiles() {
-        for (const tile of this.tiles) {
-            tile.Draw(this.worldCtx);
+        for (const row of this.matrix) {
+            for (const tile of row) {
+                tile.Draw(this.worldCtx);
+            }
         }
     }
 
     // Call each frame before entities are drawn
     ClearEntityLayer() {
-        this.entityCtx.clearRect(0, 0, ScreenSize._WIDTH, ScreenSize._HEIGHT);
+        this.entityCtx.clearRect(0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
     }
 }

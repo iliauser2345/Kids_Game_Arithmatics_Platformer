@@ -8,7 +8,7 @@ export const Images = {
     
     _PLAYER_IDLE:    createImage('./assets/Fancy_Knight/_Idle.png'),
     _PLAYER_WALK:    createImage('./assets/Fancy_Knight/_Run.png'),
-    _PLAYER_RUN:     createImage('./assets/Fancy_Knight/_Dash.png'),
+    _PLAYER_DASH:     createImage('./assets/Fancy_Knight/_Dash.png'),
     _PLAYER_ATTACK1: createImage('./assets/Fancy_Knight/_Attack.png'),
     _PLAYER_PARRY:   createImage('./assets/Fancy_Knight/_Attack2.png'),
     _PLAYER_JUMP:    createImage('./assets/Fancy_Knight/_Jump.png'),
@@ -48,7 +48,7 @@ export const PlayerStates ={
 
     _IDLE: "idle",
     _WALK: "walk",
-    _RUN: "run",
+    _DASH: "dash",
     _ATTACK1: "attack1",
     _ATTACK2: "attack2",
     _ATTACK3: "attack3",
@@ -91,8 +91,8 @@ export const WorldConstants = {
     _BLOCKSIZEY: 32,
     _WORLDSIZEX: ScreenSize._WIDTH,
     _WORLDSIZEY: ScreenSize._HEIGHT,
-    _GRIDSIZEX: SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH,
-    _GRIDSIZEY: SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT,
+    _GRIDSIZEX: Math.ceil(SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH),
+    _GRIDSIZEY: Math.ceil(SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT),
     get _GROUND() {
         // Same row formula as World.js: (rows - 1) * blockSize
         const groundTileY = (Math.ceil(SCRDIMENSIONS._SCRHEIGHT / this._BLOCKSIZEY) - 1) * this._BLOCKSIZEY;
@@ -131,7 +131,7 @@ export const PlayerAnimations = {
 
     "idle":    { image: Images._PLAYER_IDLE,    loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
     "walk":    { image: Images._PLAYER_WALK,    loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "run":     { image: Images._PLAYER_RUN ,    loc: getSpriteLoc(2, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "dash":    { image: Images._PLAYER_DASH ,   loc: getSpriteLoc(2, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
     "attack1": { image: Images._PLAYER_ATTACK1, loc: getSpriteLoc(4, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
     "parry":   { image: Images._PLAYER_PARRY,   loc: getSpriteLoc(6, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
     "jump":    { image: Images._PLAYER_JUMP,    loc: getSpriteLoc(3, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
