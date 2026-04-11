@@ -160,7 +160,7 @@ Placeholder for future implementation.
 
 ## Parser.js
 
-Listens to keyboard and mouse events and keeps track of which action keys are currently held down.
+Listens to keyboard and mouse events and keeps track of which action keys are currently held down. Also prevents the keys in use from doing their default action.
 
 ### How it works
 
@@ -257,8 +257,9 @@ Handles loading different UI screens (start menu, death screen, win screen, etc.
 
 ## Changelog
 
-|Version        | Date       | Description                                                |
-| ------------- | ---------- | -----------------------------                              |
-|26.0.1.0       | 01/04/2026 | Initial documentation written                              |
-|26.0.1.1       | 04/04/2026 | Massively changed how we are going to handle DOM rendering |
-|26.0.1.2       | 08/04.2026 | Rendering tiles, no collision yet. Images moved to Constants.js|
+|Version        | Date       | Description                                                    |
+| ------------- | ---------- | -----------------------------                                  |
+|26.0.1.0       | 01/04/2026 | Initial documentation written                                  |
+|26.0.1.1       | 04/04/2026 | Massively changed how we are going to handle DOM rendering     |
+|26.0.1.2       | 08/04/2026 | Rendering tiles, no collision yet. Images moved to Constants.js|
+|26.0.1.3       | 11/04/2026 | Matrix based tile gen implemented, still no collision          |
