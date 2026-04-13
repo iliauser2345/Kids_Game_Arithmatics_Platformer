@@ -89,7 +89,7 @@ export class World{
 
     GenerateWorld() {
         this.matrix=this.SetUpGrid();
-        this.TilePositioning(this.matrix,4,5,4,4);
+        this.TilePositioning(this.matrix,4,5,4,3);
         this.backgrImg.onload = () => {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         };

@@ -28,6 +28,8 @@ export class Player extends Entity{
         this.animationTimer = 0;
         this.animationInterval = 50; // ms per frame
         this.direction = 1; // 1 = right, -1 = left
+
+        this.dashTime = 500;
     }
     // methods
 
@@ -45,14 +47,15 @@ export class Player extends Entity{
     }
 
     HandleX(delta, keysDown){
-        const velocity = keysDown[KEYS._AUX]
+        const velocity = /*keysDown[KEYS._AUX]*/ false
             ? PlayerPhysics._BASE_SPEED * PlayerPhysics._SPRINT_MULT
             : PlayerPhysics._BASE_SPEED;
 
         const pressedRight = !!keysDown[KEYS._RWD];
         const pressedLeft  = !!keysDown[KEYS._LWD];
+        const pressedDash  = !!keysDown[KEYS._AUX];
 
-        if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft)) {
+        if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft) || this.dashing) {
             this.SetVelocity({ x: 0 });
         } else if (pressedRight) {
             this.SetVelocity({ x: velocity });
@@ -60,6 +63,22 @@ export class Player extends Entity{
         } else if (pressedLeft) {
             this.SetVelocity({ x: -velocity });
             this.direction = -1;
+        }
+
+        if (pressedDash && !this.animationLocked && !this.dashing) {
+            this.dashing = true;
+            this.dashTime = 500;
+            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+        } else if (this.dashing) {
+            this.dashTime -= delta;
+            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+            if (this.dashTime <= 0) { 
+                this.dashing = false;
+                this.dashTime = 500;
+            }
+        } else {
+            this.dashing = false;
+            this.dashTime = 500;
         }
     }
 
@@ -78,15 +97,18 @@ export class Player extends Entity{
     }
 
     HandleAnimation(){
-
         const airbourne = !(this.entityPositionY >= WorldConstants._GROUND);
 
-        if (!airbourne){
-            if      (this.entityVelocityX === 0) this.SetState(PlayerStates._IDLE);
-            else if (Math.abs(this.entityVelocityX) > PlayerPhysics._BASE_SPEED)    this.SetState(PlayerStates._DASH);
+        if (this.dashing) {
+            this.SetState(PlayerStates._DASH);
+            return;
+        }
+
+        if (!airbourne) {
+            if (this.entityVelocityX === 0) this.SetState(PlayerStates._IDLE);
             else this.SetState(PlayerStates._WALK);
         } else {
-            if (this.entityVelocityY < 0 && this.#JumpOnce){
+            if (this.entityVelocityY < 0 && this.#JumpOnce) {
                 this.SetState(PlayerStates._JUMP);
             } else {
                 this.SetState(PlayerStates._FALL);
