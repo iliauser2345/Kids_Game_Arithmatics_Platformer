@@ -80,7 +80,7 @@ export class World{
                 xindex += distance + factor 
             ) {
                 for (let j = 0; j < 4; j++) {
-                    row[xindex + j].tileINDX = 1;
+                    row[xindex + j].tileINDX = 2;
                 }
             }
         }

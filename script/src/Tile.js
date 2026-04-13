@@ -4,6 +4,7 @@ import { Entity } from "./Entity.js";
 const TileTypeMap = {
     0: null,
     1: "grassTM",
+    2: "stoneTM"
 };
 
 export class Tile extends Entity {
