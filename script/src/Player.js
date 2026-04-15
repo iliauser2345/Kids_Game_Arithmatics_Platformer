@@ -27,7 +27,11 @@ export class Player extends Entity{
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 50; // ms per frame
+
         this.direction = 1; // 1 = right, -1 = left
+        this.onGround = this.entityPositionY >= WorldConstants._GROUND
+        this.actionAllowed;
+        this.dashAllowed = true;
 
         this.dashTime = 500;
     }
@@ -37,16 +41,21 @@ export class Player extends Entity{
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
-        this.PlayPlayerAnimation(this.entityState, delta, this.direction);
+        this.PlayPlayerAnimation(this.entityState, delta, this.direction, this.actionDirection);
        // console.log(this.entityPositionX+" "+this.entityPositionY);
     }
 
     HandleInput(delta, keysDown){
+        this.actionAllowed = !this.animationLocked && !this.dashing && !this.dodging; // Wordt groter met tijd
         this.HandleX(delta, keysDown);
         this.HandleY(delta, keysDown);
     }
 
     HandleX(delta, keysDown){
+        if (this.onGround){
+            this.dashAllowed = true;
+        }
+
         const velocity = /*keysDown[KEYS._AUX]*/ false
             ? PlayerPhysics._BASE_SPEED * PlayerPhysics._SPRINT_MULT
             : PlayerPhysics._BASE_SPEED;
@@ -65,49 +74,61 @@ export class Player extends Entity{
             this.SetVelocity({ x: -velocity });
             this.direction = -1;
         }
-        if (pressedDodge && !this.animationLocked && !this.dodging && !this.dashing) {
+        if (pressedDodge && !pressedDash && this.actionAllowed && this.onGround) {
+            this.actionDirection = this.direction;
             this.dodging = true;
-            this.SetVelocity({x:PlayerPhysics._BASE_SPEED*this.direction});
+            this.SetVelocity({x:PlayerPhysics._BASE_SPEED*this.actionDirection});
         } else if (this.dodging) {
-            this.SetVelocity({x: PlayerPhysics._BASE_SPEED * this.direction});
+            this.SetVelocity({x: PlayerPhysics._BASE_SPEED * this.actionDirection});
             if (this.gameFrame == 12) {
-                if (pressedDodge && !this.animationLocked) {
+                if (pressedDodge && this.actionAllowed) {
+                    this.actionDirection = this.direction;
                     this.dodging = true;
                     this.gameFrame = 0;
                     this.animationTimer = 0;
                 } else {
                     this.dodging = false;
+                    this.actionDirection = null;
                 }
             }
         }
 
-        if (pressedDash && !this.animationLocked && !this.dashing && !this.dodging) {
+        if (pressedDash && !pressedDodge && this.dashAllowed && this.actionAllowed) {
+            this.actionDirection = this.direction;
+            this.dashAllowed = false;
             this.dashing = true;
             this.dashTime = 500;
-            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
+
         } else if (this.dashing) {
+
             this.dashTime -= delta;
-            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+            this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
+
             if (this.dashTime <= 0) {
-                if (pressedDash && !this.animationLocked && !this.dodging) {
+                if (pressedDash && !this.animationLocked && !this.dodging && !pressedDodge && this.dashAllowed) {
+                    this.dashAllowed = false;
+                    this.actionDirection = this.direction;
                     this.dashing = true;
                     this.dashTime = 500;
-                    this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+                    this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
                 } else {
                     this.dashing = false;
                     this.dashTime = 500;
+                    this.actionDirection = null;
                 }
             }
         }
     }
 
     HandleY(delta, keysDown){
-        const onGround = this.entityPositionY >= WorldConstants._GROUND;
+        this.onGround = this.entityPositionY >= WorldConstants._GROUND;
+        if (this.dashing){this.SetVelocity({y:0});return}
 
-        if (keysDown[KEYS._JMP] && onGround) {
+        if (keysDown[KEYS._JMP] && this.onGround && !this.dodging) {
             this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
             this.#JumpOnce = true;
-        } else if (!onGround) {
+        } else if (!this.onGround) {
             this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
         } else {
             this.SetVelocity({ y: 0 });
@@ -116,7 +137,7 @@ export class Player extends Entity{
     }
 
     HandleAnimation(){
-        const airbourne = !(this.entityPositionY >= WorldConstants._GROUND);
+        const airbourne = !this.onGround;
 
         if (this.dodging){
             this.SetState(PlayerStates._ROLL);
@@ -152,12 +173,14 @@ export class Player extends Entity{
         }
     }
 
-    PlayPlayerAnimation(state, delta, direction) {
+    PlayPlayerAnimation(state, delta, direction, actionDirection) {
         this.animationTimer += delta;
         if (this.animationTimer >= this.animationInterval) {
             this.gameFrame++;
             this.animationTimer = 0;
         }
+
+        if (actionDirection !== null){ direction = actionDirection}
 
         const animation = PlayerAnimations[state];
 
@@ -203,4 +226,4 @@ export class Player extends Entity{
 
         this.ctx.restore();
     }
-}   
+}
