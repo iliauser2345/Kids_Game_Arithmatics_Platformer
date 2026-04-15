@@ -8,13 +8,14 @@ export const Images = {
     
     _PLAYER_IDLE:    createImage('./assets/Fancy_Knight/_Idle.png'),
     _PLAYER_WALK:    createImage('./assets/Fancy_Knight/_Run.png'),
-    _PLAYER_DASH:     createImage('./assets/Fancy_Knight/_Dash.png'),
+    _PLAYER_DASH:    createImage('./assets/Fancy_Knight/_Dash.png'),
     _PLAYER_ATTACK1: createImage('./assets/Fancy_Knight/_Attack.png'),
     _PLAYER_PARRY:   createImage('./assets/Fancy_Knight/_Attack2.png'),
     _PLAYER_JUMP:    createImage('./assets/Fancy_Knight/_Jump.png'),
     _PLAYER_FALL:    createImage('./assets/Fancy_Knight/_Fall.png'),
     _PLAYER_HURT:    createImage('./assets/Fancy_Knight/_Hit.png'),
     _PLAYER_DEATH:   createImage('./assets/Fancy_Knight/_Death.png'),
+    _PLAYER_ROLL:    createImage('./assets/Fancy_Knight/_Roll.png'),
 
     _ENVIRONMENT: createImage('./assets/Tileset.png'),
     _BACKGROUND: createImage('./assets/PLACEHOLDER_bgr_image.jpg'), // Even uitvogelen hoe dit nou echt toegepast moet worden
@@ -26,7 +27,7 @@ export const KEYS ={
     _LWD: "A",
     _RWD: "D",
     _JMP: "Space",
-    _DGE: "Alt",
+    _DGE: "Ctrl",
     _AUX: "Shift", // auxiliary key for additional functions like sprint (Shift+A/D) etc.
     _ATK:  0, //LMB
     _ACT: "E",
@@ -56,7 +57,8 @@ export const PlayerStates ={
     _JUMP: "jump",
     _FALL: "fall",
     _HURT: "hurt",
-    _DEATH: "death"
+    _DEATH: "death",
+    _ROLL: "roll",
 }
 export const NonPlayerStates ={
 
@@ -140,7 +142,8 @@ export const PlayerAnimations = {
     "jump":    { image: Images._PLAYER_JUMP,    loc: getSpriteLoc(3, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
     "fall":    { image: Images._PLAYER_FALL,    loc: getSpriteLoc(3, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT)},
     "hurt":    { image: Images._PLAYER_HURT,    loc: getSpriteLoc(1, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
-    "death":   { image: Images._PLAYER_DEATH,   loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) }
+    "death":   { image: Images._PLAYER_DEATH,   loc: getSpriteLoc(10, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT) },
+    "roll":    { image: Images._PLAYER_ROLL,    loc: getSpriteLoc(12, 0, PlayerSize._WIDTH, PlayerSize._HEIGHT)},
 
 }
 

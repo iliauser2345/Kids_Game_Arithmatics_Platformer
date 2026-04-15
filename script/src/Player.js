@@ -55,8 +55,9 @@ export class Player extends Entity{
         const pressedRight = !!keysDown[KEYS._RWD];
         const pressedLeft  = !!keysDown[KEYS._LWD];
         const pressedDash  = !!keysDown[KEYS._AUX];
-
-        if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft) || this.dashing) {
+        const pressedDodge = !!keysDown[KEYS._DGE];
+        
+        if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft)) {
             this.SetVelocity({ x: 0 });
         } else if (pressedRight) {
             this.SetVelocity({ x: velocity });
@@ -65,21 +66,39 @@ export class Player extends Entity{
             this.SetVelocity({ x: -velocity });
             this.direction = -1;
         }
+        if (pressedDodge && !this.animationLocked && !this.dodging && !this.dashing) {
+            this.dodging = true;
+            this.SetVelocity({x:PlayerPhysics._BASE_SPEED*this.direction});
+        } else if (this.dodging) {
+            this.SetVelocity({x: PlayerPhysics._BASE_SPEED * this.direction});
+            if (this.gameFrame == 12) {
+                if (pressedDodge && !this.animationLocked) {
+                    this.dodging = true;
+                    this.gameFrame = 0;
+                    this.animationTimer = 0;
+                } else {
+                    this.dodging = false;
+                }
+            }
+        }
 
-        if (pressedDash && !this.animationLocked && !this.dashing) {
+        if (pressedDash && !this.animationLocked && !this.dashing && !this.dodging) {
             this.dashing = true;
             this.dashTime = 500;
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
         } else if (this.dashing) {
             this.dashTime -= delta;
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
-            if (this.dashTime <= 0) { 
-                this.dashing = false;
-                this.dashTime = 500;
+            if (this.dashTime <= 0) {
+                if (pressedDash && !this.animationLocked && !this.dodging) {
+                    this.dashing = true;
+                    this.dashTime = 500;
+                    this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.direction });
+                } else {
+                    this.dashing = false;
+                    this.dashTime = 500;
+                }
             }
-        } else {
-            this.dashing = false;
-            this.dashTime = 500;
         }
     }
 
@@ -99,6 +118,11 @@ export class Player extends Entity{
 
     HandleAnimation(){
         const airbourne = !(this.entityPositionY >= WorldConstants._GROUND);
+
+        if (this.dodging){
+            this.SetState(PlayerStates._ROLL);
+            return;
+        }
 
         if (this.dashing) {
             this.SetState(PlayerStates._DASH);

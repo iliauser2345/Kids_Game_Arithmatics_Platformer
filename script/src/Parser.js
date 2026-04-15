@@ -39,9 +39,6 @@ export class Parser{
                 return KEYS._RWD;
             case 'Space':
                 return KEYS._JMP;
-            case 'AltLeft':
-            case 'AltRight':
-                return KEYS._DGE;
             case 'ShiftLeft':
             case 'ShiftRight':
                 return KEYS._AUX;
@@ -55,6 +52,9 @@ export class Parser{
                 return KEYS._DRP;
             case 'KeyI':
                 return KEYS._INV;
+            case 'ControlRight':
+            case 'ControlLeft':
+                return KEYS._DGE;
             default:
                 return null;
         }
