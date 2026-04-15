@@ -5,6 +5,7 @@ export class Entity{
     entityState;
     entityPositionX;
     entityPositionY;
+    entityCenterOfMass;
     entityVelocityX;
     entityVelocityY;
     entityHealth;
@@ -18,6 +19,7 @@ export class Entity{
         this.entityVelocityX=0;
         this.entityVelocityY=0;
         this.entityHealth=health;
+
 
     }
     // methods
@@ -55,5 +57,39 @@ export class Entity{
         console.log("VelX: ",this.entityVelocityX);
         console.log("VelY: ",this.entityVelocityY);
     }
-    
+
+    SetUpCOM(sizeX, sizeY, Tile){
+
+        let centerOfmass=[Tile.entityPositionX+sizeX/2, Tile.entityPositionY+sizeY/2]
+        //console.log(this.entityPositionX, this.entityPositionY, sizeX, sizeY, Tile);
+       // console.log(centerOfmass);
+       
+
+
+
+        return centerOfmass;
+
+    }
+    SetUpHitBox(sizeX=32, sizeY=32){
+        let minX =this.entityPositionX;
+        let maxX=this.entityPositionX+sizeX;
+        let minY=this.entityPositionY;
+        let maxY=this.entityPositionY+sizeY;
+
+        return { minX, maxX, minY, maxY };
+    }
+    DrawHitBox(ctx, sizeX = 32, sizeY = 32) {
+        const hitbox = this.SetUpHitBox(sizeX, sizeY);
+
+        const x = hitbox.minX;
+        const y = hitbox.minY;
+        const w = sizeX;
+        const h = sizeY;
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, w, h);
+        ctx.restore();
+    }
 }

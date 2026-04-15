@@ -4,7 +4,7 @@ import { Window } from './Window.js';
 import { Entity } from './Entity.js';
 import { Enemy } from './Enemy.js';
 import { Player } from './Player.js';
-import { PlayerStates,PlayerAnimations,PlayerSize, ScreenSize, WorldConstants } from './Constants.js';
+import { PlayerStates,PlayerAnimations,PlayerSize, ScreenSize, WorldConstants, SCRDIMENSIONS } from './Constants.js';
 
 export class Game{
 
@@ -58,10 +58,32 @@ export class Game{
         this.world.ClearEntityLayer();
 
         this.player.Update(delta, this.parser.getKeysArray());
+        
+        
+        //DEMO STUFFFF
+        
+        this.player.DrawTileViewBox(this.player.ctx);
+       // console.log(this.player.PlayerSearchForTiles(this.world.matrix));
+        this.player.PlayerSearchForTiles(this.world.matrix).forEach(t => {
+            this.player.ctx.fillStyle = "rgba(115, 255, 0, 0.4)";
+            this.player.ctx.fillRect(
+                t.engaged.entityPositionX,
+                t.engaged.entityPositionY,
+                SCRDIMENSIONS._TILEWIDTH,
+                SCRDIMENSIONS._TILEHEIGHT
+            );
+        });
+       // this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT);
+        this.player.DrawHitBox(this.player.ctx, 120,80);
+
+
+
 
         // this.world.Update() — future: scroll/update tile layer
 
         this.loopId = requestAnimationFrame(this.loop.bind(this));
+
+        
     }
 
     Pause(){

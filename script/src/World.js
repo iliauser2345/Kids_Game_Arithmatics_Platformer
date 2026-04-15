@@ -61,6 +61,8 @@ export class World{
             if (y == WorldConstants._GRIDSIZEY - 1){IsGround = 1}
             for (let x = 0; x < WorldConstants._GRIDSIZEX; x++) {
                 row.push(new Tile({xas:SCRDIMENSIONS._TILEWIDTH*x, yas:SCRDIMENSIONS._TILEHEIGHT*y, tileINDX:IsGround}));
+               
+
             }
             matrix.push(row);
         }
@@ -81,6 +83,7 @@ export class World{
             ) {
                 for (let j = 0; j < 4; j++) {
                     row[xindex + j].tileINDX = 2;
+                    row[xindex+j].entityCenterOfMass=row[xindex+j].SetUpCOM(SCRDIMENSIONS._TILEWIDTH,SCRDIMENSIONS._TILEHEIGHT, row[xindex+j]);
                 }
             }
         }
@@ -93,7 +96,7 @@ export class World{
         this.TilePositioning(
 
             this.matrix,
-            4, // gap lenght
+            4, // gap length
             5, // distance between gaps
             4, // amount of platforms (y axis)
             4 // distance between levels (y axis)
@@ -107,6 +110,7 @@ export class World{
         Images._ENVIRONMENT.onload = () => this.DrawTiles();
         // If already loaded (cached), draw immediately
         if (Images._ENVIRONMENT.complete) this.DrawTiles();
+        return this.matrix;
     }
 
     DrawTiles() {
