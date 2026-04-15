@@ -30,6 +30,7 @@ export class Player extends Entity{
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 50; // ms per frame
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT, this)
 
         this.direction = 1; // 1 = right, -1 = left
         this.onGround = this.entityPositionY >= WorldConstants._GROUND
@@ -46,6 +47,7 @@ export class Player extends Entity{
     // methods
 
     Update(delta, keysDown) {
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT, this)
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
@@ -253,11 +255,11 @@ export class Player extends Entity{
 
     PlayerSearchForTiles(matrix,
         min=[
-            this.entityPositionX-PlayerSize._WIDTH*this.#TileViewField,
-            this.entityPositionY+PlayerSize._HEIGHT*this.#TileViewField],
+            this.COM[0]-PlayerSize._WIDTH*this.#TileViewField,
+            this.COM[1]+PlayerSize._HEIGHT*this.#TileViewField],
         max=[
-            this.entityPositionX+PlayerSize._WIDTH*this.#TileViewField,
-            this.entityPositionY-PlayerSize._HEIGHT*this.#TileViewField]
+            this.COM[0]+PlayerSize._WIDTH*this.#TileViewField,
+            this.COM[1]-PlayerSize._HEIGHT*this.#TileViewField]
         )
     {
         let results=[];
@@ -288,8 +290,8 @@ export class Player extends Entity{
         const boxWidth  = PlayerSize._WIDTH  * this.#TileViewField * 2;
         const boxHeight = PlayerSize._HEIGHT * this.#TileViewField * 2;
 
-        const x = this.entityPositionX - boxWidth  / 2;
-        const y = this.entityPositionY - boxHeight / 2;
+        const x = this.COM[0] - boxWidth / 2;
+        const y = this.COM[1] - boxHeight / 2;
 
         ctx.save();
         ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";

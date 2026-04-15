@@ -62,7 +62,7 @@ export class Game{
         
         //DEMO STUFFFF
         
-        this.player.DrawTileViewBox(this.player.ctx);
+        this.player.DrawTileViewBox(this.world.entityCtx);
        // console.log(this.player.PlayerSearchForTiles(this.world.matrix));
         this.player.PlayerSearchForTiles(this.world.matrix).forEach(t => {
             this.player.ctx.fillStyle = "rgba(115, 255, 0, 0.4)";
@@ -74,7 +74,7 @@ export class Game{
             );
         });
        // this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT);
-        this.player.DrawHitBox(this.player.ctx, 120,80);
+        this.player.DrawHitBox(this.world.entityCtx, 120,80);
 
 
 

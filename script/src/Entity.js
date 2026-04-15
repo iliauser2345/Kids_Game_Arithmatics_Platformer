@@ -71,10 +71,10 @@ export class Entity{
 
     }
     SetUpHitBox(sizeX=32, sizeY=32){
-        let minX =this.entityPositionX;
-        let maxX=this.entityPositionX+sizeX;
-        let minY=this.entityPositionY;
-        let maxY=this.entityPositionY+sizeY;
+        let minX = this.entityPositionX;
+        let maxX = this.entityPositionX+sizeX;
+        let minY = this.entityPositionY;
+        let maxY = this.entityPositionY+sizeY;
 
         return { minX, maxX, minY, maxY };
     }
