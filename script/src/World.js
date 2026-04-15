@@ -85,15 +85,23 @@ export class World{
             }
         }
         matrix.forEach(row => console.log(row.map(tile => tile.tileINDX).join(' ')));
+        matrix.forEach(row => console.log(row.join(' ')));
     }
-
+    
     GenerateWorld() {
         this.matrix=this.SetUpGrid();
-        this.TilePositioning(this.matrix,4,5,4,3);
+        this.TilePositioning(
+
+            this.matrix,
+            4, // gap lenght
+            5, // distance between gaps
+            4, // amount of platforms (y axis)
+            4 // distance between levels (y axis)
+        );
         this.backgrImg.onload = () => {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         };
-        this.backgrImg.src = "./assets/PLACEHOLDER_bgr_image.jpg";
+        this.backgrImg.src = "./assets/Image.png";
 
         // Draw tiles once (worldCtx is static until camera scrolls)
         Images._ENVIRONMENT.onload = () => this.DrawTiles();

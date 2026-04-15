@@ -38,6 +38,7 @@ export class Player extends Entity{
         this.Move(delta);
         this.HandleAnimation();
         this.PlayPlayerAnimation(this.entityState, delta, this.direction);
+
        // console.log(this.entityPositionX+" "+this.entityPositionY);
     }
 
