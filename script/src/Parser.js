@@ -20,13 +20,13 @@ export class Parser{
             e.preventDefault();
             this.keysDown[key] = true;
         }
-        console.log(this.keysDown);
+        // console.log(this.keysDown);
     }
 
     removeFromKeysDown(e) {
         const key = this.parseKey(e);
         if (key !== null) delete this.keysDown[key];
-        console.log(this.keysDown);
+        // console.log(this.keysDown);
     }
 
     parseKey(e) {
