@@ -107,9 +107,7 @@ export const PlayerPhysics = {
     _SPRINT_MULT:  1.5,
     _GRAVITY:      0.0016 ,  // px/ms² (~800 px/s²)
     _JUMP_FORCE:  -0.7,     // px/ms  (~600 px/s upward) // jumps 118 px high
-    get _DASH_VELOCITY(){
-        return this._BASE_SPEED * 3;
-    }
+    _DASHTIME:     500,     // ms
 }
 
 /*****************************************

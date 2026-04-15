@@ -35,7 +35,7 @@ export class Player extends Entity{
         this.actionDirection = null;
         this.dashAllowed = true;
 
-        this.dashTime = 500;
+        this.dashTime = PlayerPhysics._DASHTIME; // ms
 
         this.#JumpOnce = false;
         this.#JumpCount = 0;
@@ -69,7 +69,9 @@ export class Player extends Entity{
         const pressedDodge = !!keysDown[KEYS._DGE];
         
         if ((pressedRight && pressedLeft) || (!pressedRight && !pressedLeft)) {
-            this.SetVelocity({ x: 0 });
+            if (this.onGround){
+                this.SetVelocity({ x: 0 });
+            } else {this.SetVelocity({ x:Math.floor((this.entityVelocityX * 0.95)*1000)/1000})} // Basically airfriction :P
         } else if (pressedRight) {
             this.SetVelocity({ x: velocity });
             this.direction = 1;
@@ -100,23 +102,23 @@ export class Player extends Entity{
             this.actionDirection = this.direction;
             this.dashAllowed = false;
             this.dashing = true;
-            this.dashTime = 500;
+            this.dashTime = PlayerPhysics._DASHTIME;
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
 
         } else if (this.dashing) {
             this.dashTime -= delta;
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
 
-            if (this.dashTime <= 0) {
+            if (this.dashTime <= 100) {
                 if (pressedDash && !this.animationLocked && !this.dodging && !pressedDodge && this.dashAllowed) {
                     this.dashAllowed = false;
                     this.actionDirection = this.direction;
                     this.dashing = true;
-                    this.dashTime = 500;
+                    this.dashTime = PlayerPhysics._DASHTIME;
                     this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
                 } else {
                     this.dashing = false;
-                    this.dashTime = 500;
+                    this.dashTime = PlayerPhysics._DASHTIME;
                     this.actionDirection = null;
                 }
             }
