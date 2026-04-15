@@ -12,6 +12,8 @@ export class Player extends Entity{
     playerEquipment; //::Item
     playerStamina; //::int
     #JumpOnce;
+    #JumpCount;
+    #JumpReleased;
 
     constructor({ xas, yas, ctx }) {
         super({x:xas,y:yas,health:100});
@@ -20,7 +22,6 @@ export class Player extends Entity{
         this.playerStamina=75;
         this.playerEquipment=null;
 
-        // Shared entity layer context passed in from World
         this.ctx = ctx;
 
         this.animationLocked = false;
@@ -31,9 +32,14 @@ export class Player extends Entity{
         this.direction = 1; // 1 = right, -1 = left
         this.onGround = this.entityPositionY >= WorldConstants._GROUND
         this.actionAllowed;
+        this.actionDirection = null;
         this.dashAllowed = true;
 
         this.dashTime = 500;
+
+        this.#JumpOnce = false;
+        this.#JumpCount = 0;
+        this.#JumpReleased = true;
     }
     // methods
 
@@ -42,11 +48,10 @@ export class Player extends Entity{
         this.Move(delta);
         this.HandleAnimation();
         this.PlayPlayerAnimation(this.entityState, delta, this.direction, this.actionDirection);
-       // console.log(this.entityPositionX+" "+this.entityPositionY);
     }
 
     HandleInput(delta, keysDown){
-        this.actionAllowed = !this.animationLocked && !this.dashing && !this.dodging; // Wordt groter met tijd
+        this.actionAllowed = !this.animationLocked && !this.dashing && !this.dodging;
         this.HandleX(delta, keysDown);
         this.HandleY(delta, keysDown);
     }
@@ -56,9 +61,7 @@ export class Player extends Entity{
             this.dashAllowed = true;
         }
 
-        const velocity = /*keysDown[KEYS._AUX]*/ false
-            ? PlayerPhysics._BASE_SPEED * PlayerPhysics._SPRINT_MULT
-            : PlayerPhysics._BASE_SPEED;
+        const velocity = PlayerPhysics._BASE_SPEED;
 
         const pressedRight = !!keysDown[KEYS._RWD];
         const pressedLeft  = !!keysDown[KEYS._LWD];
@@ -101,7 +104,6 @@ export class Player extends Entity{
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
 
         } else if (this.dashing) {
-
             this.dashTime -= delta;
             this.SetVelocity({ x: PlayerPhysics._BASE_SPEED * (this.dashTime / 100) * this.actionDirection });
 
@@ -123,14 +125,37 @@ export class Player extends Entity{
 
     HandleY(delta, keysDown){
         this.onGround = this.entityPositionY >= WorldConstants._GROUND;
-        if (this.dashing){this.SetVelocity({y:0});return}
+        
+        if (this.onGround) {
+            this.#JumpCount = 0;
+            if (this.entityVelocityY > 0) {
+                this.SetVelocity({ y: 0 });
+                this.entityPositionY = WorldConstants._GROUND;
+            }
+        }
 
-        if (keysDown[KEYS._JMP] && this.onGround && !this.dodging) {
+        if (this.dashing) {
+            this.SetVelocity({y: 0});
+            return;
+        }
+
+        const jumpKeyPressed = !!keysDown[KEYS._JMP];
+
+        if (jumpKeyPressed && this.#JumpReleased && this.#JumpCount < 2 && !this.dodging) {
             this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
+            this.#JumpCount++;
+            this.#JumpReleased = false;
             this.#JumpOnce = true;
-        } else if (!this.onGround) {
+            this.onGround = false;
+        } 
+        
+        if (!jumpKeyPressed) {
+            this.#JumpReleased = true;
+        }
+
+        if (!this.onGround) {
             this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
-        } else {
+        } else if (!jumpKeyPressed) {
             this.SetVelocity({ y: 0 });
             this.entityPositionY = WorldConstants._GROUND;
         }
@@ -163,11 +188,11 @@ export class Player extends Entity{
     }
 
     SetState(state, once = false) {
-        if (this.animationLocked) return; // blokkeert de animation change totdat hij klaar is
+        if (this.animationLocked) return;
 
         if (state && state !== this.entityState) {
             this.entityState = state;
-            this.gameFrame = 0;        // start alle animaties op frame 0
+            this.gameFrame = 0;
             this.animationTimer = 0;
             this.animationLocked = once;
         }
@@ -184,27 +209,22 @@ export class Player extends Entity{
 
         const animation = PlayerAnimations[state];
 
-        // One-shot animation has completed a full cycle
         if (this.animationLocked && this.gameFrame >= animation.loc.length) {
             this.animationLocked = false;
-            this.SetState(PlayerStates._IDLE); // or whichever fallback state fits
+            this.SetState(PlayerStates._IDLE);
             return;
         }
 
-        // Loop for normal states, clamp for locked one-shot states
         const position = this.animationLocked
             ? Math.min(this.gameFrame, animation.loc.length - 1)
             : this.gameFrame % animation.loc.length;
 
         const frameX = animation.loc[position].x;
         const frameY = animation.loc[position].y;
-
-        // Draw onto the shared entity canvas at the player's world position
         
         this.ctx.save();
 
         if (direction === -1) {
-            // De horizontale flip
             this.ctx.translate(this.entityPositionX + PlayerSize._WIDTH, this.entityPositionY);
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(
