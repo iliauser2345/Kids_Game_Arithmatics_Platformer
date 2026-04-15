@@ -4,6 +4,7 @@ import { Entity } from './Entity.js';
 
 // Constants
 import { PlayerStates, PlayerSize, PlayerAnimations, KEYS, ScreenSize, PlayerPhysics, Images, WorldConstants } from './Constants.js';
+import { Tile } from './Tile.js';
 
 export class Player extends Entity{
     //fields
@@ -11,6 +12,7 @@ export class Player extends Entity{
     playerInventory; //::Inventory
     playerEquipment; //::Item
     playerStamina; //::int
+    #TileViewField=3; //::amount of tiles
     #JumpOnce;
 
     constructor({ xas, yas, ctx }) {
@@ -203,5 +205,52 @@ export class Player extends Entity{
         }
 
         this.ctx.restore();
+    }
+
+    PlayerSearchForTiles(matrix,
+        min=[
+            this.entityPositionX-PlayerSize._WIDTH*this.#TileViewField,
+            this.entityPositionY+PlayerSize._HEIGHT*this.#TileViewField],
+        max=[
+            this.entityPositionX+PlayerSize._WIDTH*this.#TileViewField,
+            this.entityPositionY-PlayerSize._HEIGHT*this.#TileViewField]
+        )
+    {
+        let results=[];
+        for (let row = 0; row < matrix.length; row++) {
+            for (let col = 0; col < matrix[row].length; col++) {
+            let engaged = matrix[row][col];
+            if(engaged.entityCenterOfMass){
+                let valueX = matrix[row][col].entityCenterOfMass[0];
+                let valueY = matrix[row][col].entityCenterOfMass[1];
+                if (
+                        valueX >= min[0] &&
+                        valueY <= min[1] &&
+                        valueX <= max[0] &&
+                        valueY >= max[1]
+                    ) 
+                    {
+                    results.push({ engaged, valueX, valueY, row, col });
+                    }
+                }
+                //results.push({engaged,row, col})
+            }
+            
+        }
+
+    return results;
+    }
+        DrawTileViewBox(ctx) {
+        const boxWidth  = PlayerSize._WIDTH  * this.#TileViewField * 2;
+        const boxHeight = PlayerSize._HEIGHT * this.#TileViewField * 2;
+
+        const x = this.entityPositionX - boxWidth  / 2;
+        const y = this.entityPositionY - boxHeight / 2;
+
+        ctx.save();
+        ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, boxWidth, boxHeight);
+        ctx.restore();
     }
 }   
