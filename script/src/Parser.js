@@ -45,7 +45,7 @@ export class Parser{
             case 'Mouse0':
                 return KEYS._ATK;
             case 'Mouse2':
-                return KEYS._
+                return KEYS._PRY;
             case 'KeyE':
                 return KEYS._ACT;
             case 'KeyP':

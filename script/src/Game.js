@@ -12,7 +12,7 @@ export class Game{
         this.parser = new Parser();
         this.world = new World();
         this.player = null;
-        this.window = new Window();
+        this.gameWindow = new Window();
         this.loopId = null;
         this.lastTime = 0;
     }
@@ -45,7 +45,7 @@ export class Game{
         this.world.GenerateWorld();
 
         // Useless
-        this.window.LoadWindow("start");
+        this.gameWindow.LoadWindow("start");
 
         this.loopId = requestAnimationFrame(this.loop.bind(this));
     }

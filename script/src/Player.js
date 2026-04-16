@@ -30,7 +30,7 @@ export class Player extends Entity{
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 50; // ms per frame
-        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT, this)
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
 
         this.direction = 1; // 1 = right, -1 = left
         this.onGround = this.entityPositionY >= WorldConstants._GROUND
@@ -53,7 +53,7 @@ export class Player extends Entity{
     // methods
 
     Update(delta, keysDown) {
-        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT, this)
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
@@ -96,7 +96,7 @@ export class Player extends Entity{
             this.SetVelocity({x:PlayerPhysics._BASE_SPEED*this.actionDirection});
         } else if (this.dodging) {
             this.SetVelocity({x: PlayerPhysics._BASE_SPEED * this.actionDirection});
-            if (this.gameFrame == 12) {
+            if (this.gameFrame >= 12) {
                 if (pressedDodge && this.actionAllowed) {
                     this.actionDirection = this.direction;
                     this.dodging = true;
@@ -177,7 +177,7 @@ export class Player extends Entity{
     HandleATK(delta, keysDown){
 
         this.pressedAttack = !!keysDown[KEYS._ATK];
-        this.pressedParry  = !!keysDown[KEYS._P]
+        this.pressedParry  = !!keysDown[KEYS._PRY];
     }
 
     HandleAnimation(){
@@ -278,13 +278,13 @@ export class Player extends Entity{
             this.COM[1]-PlayerSize._HEIGHT*this.#TileViewField]
         )
     {
-        let results=[];
+        const results=[];
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-            let engaged = matrix[row][col];
+            const engaged = matrix[row][col];
             if(engaged.entityCenterOfMass){
-                let valueX = matrix[row][col].entityCenterOfMass[0];
-                let valueY = matrix[row][col].entityCenterOfMass[1];
+                const valueX = matrix[row][col].entityCenterOfMass[0];
+                const valueY = matrix[row][col].entityCenterOfMass[1];
                 if (
                         valueX >= min[0] &&
                         valueY <= min[1] &&
