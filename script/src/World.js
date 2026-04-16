@@ -88,7 +88,6 @@ export class World{
             }
         }
         matrix.forEach(row => console.log(row.map(tile => tile.tileINDX).join(' ')));
-        matrix.forEach(row => console.log(row.join(' ')));
     }
     
     GenerateWorld() {

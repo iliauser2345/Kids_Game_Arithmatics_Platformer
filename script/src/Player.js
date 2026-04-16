@@ -34,11 +34,17 @@ export class Player extends Entity{
 
         this.direction = 1; // 1 = right, -1 = left
         this.onGround = this.entityPositionY >= WorldConstants._GROUND
-        this.actionAllowed;
+
+        this.actionAllowed = true;
         this.actionDirection = null;
         this.dashAllowed = true;
-
+        this.dashing = false;
         this.dashTime = PlayerPhysics._DASHTIME; // ms
+
+        this.dodging = false;
+
+        this.attacking = false;
+        this.attackSequence = 0;
 
         this.#JumpOnce = false;
         this.#JumpCount = 0;
@@ -58,6 +64,7 @@ export class Player extends Entity{
         this.actionAllowed = !this.animationLocked && !this.dashing && !this.dodging;
         this.HandleX(delta, keysDown);
         this.HandleY(delta, keysDown);
+        this.HandleATK(delta, keysDown);
     }
 
     HandleX(delta, keysDown){
@@ -167,8 +174,17 @@ export class Player extends Entity{
         }
     }
 
+    HandleATK(delta, keysDown){
+
+        this.pressedAttack = !!keysDown[KEYS._ATK];
+        this.pressedParry  = !!keysDown[KEYS._P]
+    }
+
     HandleAnimation(){
         const airbourne = !this.onGround;
+
+        if (this.attacking){
+        }
 
         if (this.dodging){
             this.SetState(PlayerStates._ROLL);
