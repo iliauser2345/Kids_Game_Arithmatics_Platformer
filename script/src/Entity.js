@@ -74,14 +74,18 @@ export class Entity{
         this.entityHitBox = { minX, maxX, minY, maxY };
         return this.entityHitBox;
     }
-
-    DrawHitBox(ctx,sizeX = 32, sizeY = 32) {
+    DrawHitBox(ctx, sizeX = 32, sizeY = 32) {
         const hitbox = this.SetUpHitBox(sizeX, sizeY);
+
+        const x = hitbox.minX;
+        const y = hitbox.minY;
+        const w = sizeX;
+        const h = sizeY;
+
         ctx.save();
         ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
         ctx.lineWidth = 2;
-        ctx.strokeRect(hitbox.minX, hitbox.minY, sizeX, sizeY);
+        ctx.strokeRect(x, y, w, h);
         ctx.restore();
     }
-
 }

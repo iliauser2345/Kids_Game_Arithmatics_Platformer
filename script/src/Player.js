@@ -12,7 +12,7 @@ export class Player extends Entity{
     playerInventory; //::Inventory
     playerEquipment; //::Item
     playerStamina; //::int
-    #TileViewField=10; //::amount of tiles
+    #TileViewField=3; //::amount of tiles
     #JumpOnce;
     #JumpCount;
     #JumpReleased;
@@ -297,14 +297,16 @@ export class Player extends Entity{
                     results.push({ engaged, valueX, valueY, row, col });
                     }
                 }
+                //results.push({engaged,row, col})
             }
+            
         }
 
-        return results;
-}
-    DrawTileViewBox(ctx) {
-        const halfW = WorldConstants._BLOCKSIZEX * this.#TileViewField;
-        const halfH = WorldConstants._BLOCKSIZEY * this.#TileViewField;
+    return results;
+    }
+        DrawTileViewBox(ctx) {
+        const boxWidth  = PlayerSize._WIDTH  * this.#TileViewField * 2;
+        const boxHeight = PlayerSize._HEIGHT * this.#TileViewField * 2;
 
         const x = this.COM[0] - boxWidth / 2;
         const y = this.COM[1] - boxHeight / 2;
@@ -312,7 +314,7 @@ export class Player extends Entity{
         ctx.save();
         ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
         ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, halfW * 2, halfH * 2);
+        ctx.strokeRect(x, y, boxWidth, boxHeight);
         ctx.restore();
     }
 
