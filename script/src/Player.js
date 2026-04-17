@@ -49,15 +49,17 @@ export class Player extends Entity{
         this.#JumpOnce = false;
         this.#JumpCount = 0;
         this.#JumpReleased = true;
+        this.devstuff = false;
     }
     // methods
 
-    Update(delta, keysDown) {
+    Update(delta, keysDown, matrix) {
         this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
         this.PlayPlayerAnimation(this.entityState, delta, this.direction, this.actionDirection);
+        this.Developer(this.ctx, this.devstuff, matrix);
     }
 
     HandleInput(delta, keysDown){
@@ -314,5 +316,20 @@ export class Player extends Entity{
         ctx.lineWidth = 2;
         ctx.strokeRect(x, y, boxWidth, boxHeight);
         ctx.restore();
+    }
+
+    Developer(ctx, enabled, matrix){
+        if (enabled){
+            this.DrawTileViewBox(ctx);
+            this.DrawHitBox(ctx, 120,80);
+            this.PlayerSearchForTiles(matrix).forEach(t => {
+            ctx.fillStyle = "rgba(115, 255, 0, 0.4)";
+            ctx.fillRect(
+                t.engaged.entityPositionX,
+                t.engaged.entityPositionY,
+                WorldConstants._BLOCKSIZEX,
+                WorldConstants._BLOCKSIZEY
+            );
+        })};
     }
 }   

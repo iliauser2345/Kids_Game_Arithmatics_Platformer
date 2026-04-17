@@ -82,7 +82,6 @@ export class World{
             ) {
                 for (let j = 0; j < 4; j++) {
                     row[xindex + j].tileINDX = 2;
-                    row[xindex+j].entityCenterOfMass=row[xindex+j].SetUpCOM(SCRDIMENSIONS._TILEWIDTH,SCRDIMENSIONS._TILEHEIGHT, row[xindex+j]);
                 }
             }
         }

@@ -1,5 +1,6 @@
 import { WorldConstants, Images, BlockLoc } from "./Constants.js";
 import { Entity } from "./Entity.js";
+import { World } from "./World.js";
 
 const TileTypeMap = {
     0: null,
@@ -13,10 +14,13 @@ export class Tile extends Entity {
     constructor({ xas = 0, yas = 0, tileINDX = 0 }) {
         super({ x: xas, y: yas, health: null });
         this.#tileINDX = tileINDX;
+        if (this.#tileINDX > 0){
+            this.entityCenterOfMass = this.SetUpCOM(WorldConstants._BLOCKSIZEX, WorldConstants._BLOCKSIZEY)
+        }
     }
 
     get tileINDX()        { return this.#tileINDX; }
-    set tileINDX(val)     { this.#tileINDX = val;  }
+    set tileINDX(val)     { this.#tileINDX = val; this.entityCenterOfMass = this.SetUpCOM(WorldConstants._BLOCKSIZEX, WorldConstants._BLOCKSIZEY) }
 
     Draw(ctx) {
         const tileType = TileTypeMap[this.#tileINDX];

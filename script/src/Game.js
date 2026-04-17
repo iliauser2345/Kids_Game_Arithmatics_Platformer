@@ -57,26 +57,9 @@ export class Game{
 
         this.world.ClearEntityLayer();
 
-        this.player.Update(delta, this.parser.getKeysArray());
+        this.player.Update(delta, this.parser.getKeysArray(), this.world.matrix);
         
         
-        //DEMO STUFFFF
-        
-        this.player.DrawTileViewBox(this.world.entityCtx);
-       // console.log(this.player.PlayerSearchForTiles(this.world.matrix));
-        this.player.PlayerSearchForTiles(this.world.matrix).forEach(t => {
-            this.player.ctx.fillStyle = "rgba(115, 255, 0, 0.4)";
-            this.player.ctx.fillRect(
-                t.engaged.entityPositionX,
-                t.engaged.entityPositionY,
-                SCRDIMENSIONS._TILEWIDTH,
-                SCRDIMENSIONS._TILEHEIGHT
-            );
-        });
-       // this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT);
-        this.player.DrawHitBox(this.world.entityCtx, 120,80);
-
-
 
 
         // this.world.Update() — future: scroll/update tile layer

@@ -1,4 +1,4 @@
-import { WorldConstants } from "./Constants.js";
+import { SCRDIMENSIONS, WorldConstants } from "./Constants.js";
 export class Entity{
 
     //fields
@@ -22,7 +22,6 @@ export class Entity{
         this.entityVelocityX=0;
         this.entityVelocityY=0;
         this.entityHealth=health;
-
 
     }
     // methods
