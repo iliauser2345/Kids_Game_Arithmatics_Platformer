@@ -18,7 +18,6 @@ export const Images = {
     _PLAYER_ROLL:    createImage('./assets/Fancy_Knight/_Roll.png'),
 
     _ENVIRONMENT: createImage('./assets/Tileset.png'),
-    _BACKGROUND: createImage('./assets/PLACEHOLDER_bgr_image.jpg'), // Even uitvogelen hoe dit nou echt toegepast moet worden
 
 };
 
