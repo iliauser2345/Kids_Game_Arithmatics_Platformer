@@ -30,14 +30,21 @@ export class Player extends Entity{
         this.gameFrame = 0;
         this.animationTimer = 0;
         this.animationInterval = 50; // ms per frame
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
 
         this.direction = 1; // 1 = right, -1 = left
         this.onGround = this.entityPositionY >= WorldConstants._GROUND
-        this.actionAllowed;
+
+        this.actionAllowed = true;
         this.actionDirection = null;
         this.dashAllowed = true;
-
+        this.dashing = false;
         this.dashTime = PlayerPhysics._DASHTIME; // ms
+
+        this.dodging = false;
+
+        this.attacking = false;
+        this.attackSequence = 0;
 
         this.#JumpOnce = false;
         this.#JumpCount = 0;
@@ -46,6 +53,7 @@ export class Player extends Entity{
     // methods
 
     Update(delta, keysDown) {
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
@@ -56,6 +64,7 @@ export class Player extends Entity{
         this.actionAllowed = !this.animationLocked && !this.dashing && !this.dodging;
         this.HandleX(delta, keysDown);
         this.HandleY(delta, keysDown);
+        this.HandleATK(delta, keysDown);
     }
 
     HandleX(delta, keysDown){
@@ -87,7 +96,7 @@ export class Player extends Entity{
             this.SetVelocity({x:PlayerPhysics._BASE_SPEED*this.actionDirection});
         } else if (this.dodging) {
             this.SetVelocity({x: PlayerPhysics._BASE_SPEED * this.actionDirection});
-            if (this.gameFrame == 12) {
+            if (this.gameFrame >= 12) {
                 if (pressedDodge && this.actionAllowed) {
                     this.actionDirection = this.direction;
                     this.dodging = true;
@@ -165,8 +174,17 @@ export class Player extends Entity{
         }
     }
 
+    HandleATK(delta, keysDown){
+
+        this.pressedAttack = !!keysDown[KEYS._ATK];
+        this.pressedParry  = !!keysDown[KEYS._PRY];
+    }
+
     HandleAnimation(){
         const airbourne = !this.onGround;
+
+        if (this.attacking){
+        }
 
         if (this.dodging){
             this.SetState(PlayerStates._ROLL);
@@ -251,37 +269,30 @@ export class Player extends Entity{
         this.ctx.restore();
     }
 
-    PlayerSearchForTiles(matrix) {
-        // Compute player COM
-        const comX = this.entityPositionX + PlayerSize._WIDTH / 2;
-        const comY = this.entityPositionY + PlayerSize._HEIGHT / 2;
-
-        // Build bounds symmetrically around COM
-        const halfW = WorldConstants._BLOCKSIZEX * this.#TileViewField;
-        const halfH = WorldConstants._BLOCKSIZEY * this.#TileViewField;
-
-        const minX = comX - halfW;
-        const maxX = comX + halfW;
-        const minY = comY - halfH;  // top    (smaller Y = higher on screen)
-        const maxY = comY + halfH;  // bottom (larger  Y = lower  on screen)
-
-        let results = [];
-
+    PlayerSearchForTiles(matrix,
+        min=[
+            this.COM[0]-PlayerSize._WIDTH*this.#TileViewField,
+            this.COM[1]+PlayerSize._HEIGHT*this.#TileViewField],
+        max=[
+            this.COM[0]+PlayerSize._WIDTH*this.#TileViewField,
+            this.COM[1]-PlayerSize._HEIGHT*this.#TileViewField]
+        )
+    {
+        const results=[];
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-                const engaged = matrix[row][col];
-
-                if (engaged.entityCenterOfMass) {
-                    const valueX = engaged.entityCenterOfMass[0];
-                    const valueY = engaged.entityCenterOfMass[1];
-
-                    if (
-                        valueX >= minX &&
-                        valueX <= maxX &&
-                        valueY >= minY && 
-                        valueY <= maxY
-                    ) {
-                        results.push({ engaged, valueX, valueY, row, col });
+            const engaged = matrix[row][col];
+            if(engaged.entityCenterOfMass){
+                const valueX = matrix[row][col].entityCenterOfMass[0];
+                const valueY = matrix[row][col].entityCenterOfMass[1];
+                if (
+                        valueX >= min[0] &&
+                        valueY <= min[1] &&
+                        valueX <= max[0] &&
+                        valueY >= max[1]
+                    ) 
+                    {
+                    results.push({ engaged, valueX, valueY, row, col });
                     }
                 }
             }
@@ -293,13 +304,8 @@ export class Player extends Entity{
         const halfW = WorldConstants._BLOCKSIZEX * this.#TileViewField;
         const halfH = WorldConstants._BLOCKSIZEY * this.#TileViewField;
 
-        // COM of player
-        const comX = this.entityPositionX + PlayerSize._WIDTH  / 2;
-        const comY = this.entityPositionY + PlayerSize._HEIGHT / 2;
-
-        // Top-left corner of the box, centered on COM
-        const x = comX - halfW;
-        const y = comY - halfH;
+        const x = this.COM[0] - boxWidth / 2;
+        const y = this.COM[1] - boxHeight / 2;
 
         ctx.save();
         ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";

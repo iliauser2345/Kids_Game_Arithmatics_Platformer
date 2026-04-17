@@ -12,7 +12,7 @@ export class Game{
         this.parser = new Parser();
         this.world = new World();
         this.player = null;
-        this.window = new Window();
+        this.gameWindow = new Window();
         this.loopId = null;
         this.lastTime = 0;
     }
@@ -45,7 +45,7 @@ export class Game{
         this.world.GenerateWorld();
 
         // Useless
-        this.window.LoadWindow("start");
+        this.gameWindow.LoadWindow("start");
 
         this.loopId = requestAnimationFrame(this.loop.bind(this));
     }
@@ -61,9 +61,8 @@ export class Game{
         
         
         //DEMO STUFFFF
-        this.player.SetUpHitBox(PlayerSize._WIDTH,PlayerSize._HEIGHT);
-        this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT,32,32);
-        this.player.DrawTileViewBox(this.player.ctx);
+        
+        this.player.DrawTileViewBox(this.world.entityCtx);
        // console.log(this.player.PlayerSearchForTiles(this.world.matrix));
         this.player.PlayerSearchForTiles(this.world.matrix).forEach(t => {
             this.player.ctx.fillStyle = "rgba(115, 255, 0, 0.4)";
@@ -74,7 +73,8 @@ export class Game{
                 SCRDIMENSIONS._TILEHEIGHT
             );
         });
-
+       // this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT);
+        this.player.DrawHitBox(this.world.entityCtx, 120,80);
 
 
 

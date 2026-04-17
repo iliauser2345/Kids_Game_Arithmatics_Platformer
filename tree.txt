@@ -1,72 +1,99 @@
-.
+Kids_Game_Arithmatics_Platformer
 ├── assets
-│   ├── COUPON.pdf
-│   ├── COUPON.png
-│   ├── Enchantress
-│   │   ├── Attack_1.png
-│   │   ├── Attack_2.png
-│   │   ├── Attack_3.png
-│   │   ├── Attack_4.png
-│   │   ├── Dead.png
-│   │   ├── Hurt.png
-│   │   ├── Idle.png
-│   │   ├── Jump.png
-│   │   ├── Run.png
-│   │   └── Walk.png
-│   ├── Font.txt
-│   ├── Free Assets Craftpix!.url
-│   ├── Knight
-│   │   ├── Attack_1.png
-│   │   ├── Attack_2.png
-│   │   ├── Attack_3.png
-│   │   ├── Attack_4.png
-│   │   ├── Dead.png
-│   │   ├── Hurt.png
-│   │   ├── Idle.png
-│   │   ├── Jump.png
-│   │   ├── Run.png
-│   │   └── Walk.png
-│   ├── Knight_spritelist.png
-│   ├── Licens.txt
-│   ├── Musketeer
-│   │   ├── Attack_1.png
-│   │   ├── Attack_2.png
-│   │   ├── Attack_3.png
-│   │   ├── Attack_4.png
-│   │   ├── Dead.png
-│   │   ├── Hurt.png
-│   │   ├── Idle.png
-│   │   ├── Jump.png
-│   │   ├── Run.png
-│   │   └── Walk.png
-│   ├── PLACEHOLDER_bgr_image.jpg
-│   ├── PLACEHOLDER_character_img.png
-│   ├── PLACEHOLDER.ico
-│   ├── PSD
-│   │   ├── Enchantress_spritelist.psd
-│   │   ├── Knight_spritelist.psd
-│   │   └── Swordsman_spritelist.psd
-│   └── Tileset.png
+│   ├── Enchantress
+│   │   ├── Attack_1.png
+│   │   ├── Attack_2.png
+│   │   ├── Attack_3.png
+│   │   ├── Attack_4.png
+│   │   ├── Dead.png
+│   │   ├── Hurt.png
+│   │   ├── Idle.png
+│   │   ├── Jump.png
+│   │   ├── Run.png
+│   │   └── Walk.png
+│   ├── Fancy_Knight
+│   │   ├── _Attack.png
+│   │   ├── _Attack2.png
+│   │   ├── _Attack2NoMovement.png
+│   │   ├── _AttackCombo2hit.png
+│   │   ├── _AttackComboNoMovement.png
+│   │   ├── _AttackNoMovement.png
+│   │   ├── _Crouch.png
+│   │   ├── _CrouchAttack.png
+│   │   ├── _CrouchFull.png
+│   │   ├── _CrouchTransition.png
+│   │   ├── _CrouchWalk.png
+│   │   ├── _Dash.png
+│   │   ├── _Death.png
+│   │   ├── _DeathNoMovement.png
+│   │   ├── _Fall.png
+│   │   ├── _Hit.png
+│   │   ├── _Idle.png
+│   │   ├── _Jump.png
+│   │   ├── _JumpFallInbetween.png
+│   │   ├── _Roll.png
+│   │   ├── _Run.png
+│   │   ├── _Slide.png
+│   │   ├── _SlideFull.png
+│   │   ├── _SlideTransitionEnd.png
+│   │   ├── _SlideTransitionStart.png
+│   │   ├── _TurnAround.png
+│   │   ├── _WallClimb.png
+│   │   ├── _WallClimbNoMovement.png
+│   │   ├── _WallHang.png
+│   │   └── _WallSlide.png
+│   ├── Font.txt
+│   ├── Image.png
+│   ├── Knight
+│   │   ├── Attack_1.png
+│   │   ├── Attack_2.png
+│   │   ├── Attack_3.png
+│   │   ├── Attack_4.png
+│   │   ├── Dead.png
+│   │   ├── Hurt.png
+│   │   ├── Idle.png
+│   │   ├── Jump.png
+│   │   ├── Run.png
+│   │   └── Walk.png
+│   ├── Knight_spritelist.png
+│   ├── Musketeer
+│   │   ├── Attack_1.png
+│   │   ├── Attack_2.png
+│   │   ├── Attack_3.png
+│   │   ├── Attack_4.png
+│   │   ├── Dead.png
+│   │   ├── Hurt.png
+│   │   ├── Idle.png
+│   │   ├── Jump.png
+│   │   ├── Run.png
+│   │   └── Walk.png
+│   ├── PLACEHOLDER.ico
+│   ├── PLACEHOLDER_bgr_image.jpg
+│   ├── PLACEHOLDER_character_img.png
+│   ├── PSD
+│   │   ├── Enchantress_spritelist.psd
+│   │   ├── Knight_spritelist.psd
+│   │   └── Swordsman_spritelist.psd
+│   ├── Spritelist.png
+│   └── Tileset.png
 ├── css
-│   └── style.css
+│   └── style.css
 ├── index.html
 ├── nonCode
-│   └── changelog.md
+│   └── changelog.md
 ├── script
-│   ├── script.js
-│   └── src
-│       ├── Chest.js
-│       ├── Constants.js
-│       ├── Enemy.js
-│       ├── Entity.js
-│       ├── Game.js
-│       ├── Inventory.js
-│       ├── Item.js
-│       ├── Parser.js
-│       ├── Player.js
-│       ├── Tile.js
-│       ├── Window.js
-│       └── World.js
+│   ├── script.js
+│   └── src
+│       ├── Chest.js
+│       ├── Constants.js
+│       ├── Enemy.js
+│       ├── Entity.js
+│       ├── Game.js
+│       ├── Inventory.js
+│       ├── Item.js
+│       ├── Parser.js
+│       ├── Player.js
+│       ├── Tile.js
+│       ├── Window.js
+│       └── World.js
 └── tree.txt
-
-10 directories, 60 files

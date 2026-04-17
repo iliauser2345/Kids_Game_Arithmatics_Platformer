@@ -30,6 +30,7 @@ export const KEYS ={
     _DGE: "Ctrl",
     _AUX: "Shift", // auxiliary key for additional functions like sprint (Shift+A/D) etc.
     _ATK:  0, //LMB
+    _PRY:  2, //RMB
     _ACT: "E",
     _PAU: "P",
     _DRP: "Q",
@@ -51,8 +52,6 @@ export const PlayerStates ={
     _WALK: "walk",
     _DASH: "dash",
     _ATTACK1: "attack1",
-    _ATTACK2: "attack2",
-    _ATTACK3: "attack3",
     _PARRY: "parry",
     _JUMP: "jump",
     _FALL: "fall",

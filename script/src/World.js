@@ -9,7 +9,6 @@ export class World{
 
         this.WorldGrid = [];
         this.backgrImg = new Image();
-        this.tileImg="";
         this.enemy;
 
         // Layer contexts, wordt gebruikt in CreateLayers()
@@ -52,11 +51,11 @@ export class World{
         return ctx;
     }
     SetUpGrid(){
-        let matrix=[];
+        const matrix=[];
         console.log(SCRDIMENSIONS._SCRWIDTH);
         console.log(SCRDIMENSIONS._SCRHEIGHT);
         for (let y = 0; y < WorldConstants._GRIDSIZEY; y++) {
-            let row = [];
+            const row = [];
             let IsGround = 0;
             if (y == WorldConstants._GRIDSIZEY - 1){IsGround = 1}
             for (let x = 0; x < WorldConstants._GRIDSIZEX; x++) {
@@ -88,7 +87,6 @@ export class World{
             }
         }
         matrix.forEach(row => console.log(row.map(tile => tile.tileINDX).join(' ')));
-        matrix.forEach(row => console.log(row.join(' ')));
     }
     
     GenerateWorld() {
@@ -105,6 +103,10 @@ export class World{
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         };
         this.backgrImg.src = "./assets/Image.png";
+        // If already loaded (cached), draw immediately
+        if (this.backgrImg.complete) {
+            this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
+        }
 
         // Draw tiles once (worldCtx is static until camera scrolls)
         Images._ENVIRONMENT.onload = () => this.DrawTiles();

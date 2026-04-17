@@ -9,6 +9,9 @@ export class Entity{
     entityVelocityX;
     entityVelocityY;
     entityHealth;
+    entityHitBox;
+    elementSizeX;
+    elementSizeY;
     ctx;
 
 
@@ -23,7 +26,7 @@ export class Entity{
 
     }
     // methods
-    CreateThing({ctx, elementSizeX = WorldConstants._BLOCKSIZEX, elementSizeY = WorldConstants._BLOCKSIZEY}){
+    InitRenderer({ctx, elementSizeX = WorldConstants._BLOCKSIZEX, elementSizeY = WorldConstants._BLOCKSIZEY}){
         this.ctx = ctx;
         this.elementSizeX = elementSizeX;
         this.elementSizeY = elementSizeY;
@@ -58,28 +61,19 @@ export class Entity{
         console.log("VelY: ",this.entityVelocityY);
     }
 
-    SetUpCOM(sizeX, sizeY, Tile){
-
-        let centerOfmass=[Tile.entityPositionX+sizeX/2, Tile.entityPositionY+sizeY/2]
-        //console.log(this.entityPositionX, this.entityPositionY, sizeX, sizeY, Tile);
-       // console.log(centerOfmass);
-       
-
-
-
-        return centerOfmass;
-
+    SetUpCOM(sizeX, sizeY){
+        const centerOfMass = [this.entityPositionX + sizeX / 2, this.entityPositionY + sizeY / 2];
+        return centerOfMass;
     }
-    SetUpHitBox(sizeX = 32, sizeY = 32) {
-        const comX = this.entityPositionX + sizeX / 2;
-        const comY = this.entityPositionY + sizeY / 2;
 
-        return {
-            minX: comX - sizeX / 2,
-            maxX: comX + sizeX / 2,
-            minY: comY - sizeY / 2,
-            maxY: comY + sizeY / 2,
-        };
+    SetUpHitBox(sizeX=32, sizeY=32){
+        const minX = this.entityPositionX;
+        const maxX = this.entityPositionX + sizeX;
+        const minY = this.entityPositionY;
+        const maxY = this.entityPositionY + sizeY;
+
+        this.entityHitBox = { minX, maxX, minY, maxY };
+        return this.entityHitBox;
     }
 
     DrawHitBox(ctx,sizeX = 32, sizeY = 32) {
