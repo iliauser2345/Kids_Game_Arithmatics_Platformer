@@ -12,7 +12,7 @@ export class Player extends Entity{
     playerInventory; //::Inventory
     playerEquipment; //::Item
     playerStamina; //::int
-    #TileViewField=3; //::amount of tiles
+    #TileViewField=10; //::amount of tiles
     #JumpOnce;
     #JumpCount;
     #JumpReleased;
@@ -251,50 +251,60 @@ export class Player extends Entity{
         this.ctx.restore();
     }
 
-    PlayerSearchForTiles(matrix,
-        min=[
-            this.entityPositionX-PlayerSize._WIDTH*this.#TileViewField,
-            this.entityPositionY+PlayerSize._HEIGHT*this.#TileViewField],
-        max=[
-            this.entityPositionX+PlayerSize._WIDTH*this.#TileViewField,
-            this.entityPositionY-PlayerSize._HEIGHT*this.#TileViewField]
-        )
-    {
-        let results=[];
+    PlayerSearchForTiles(matrix) {
+        // Compute player COM
+        const comX = this.entityPositionX + PlayerSize._WIDTH / 2;
+        const comY = this.entityPositionY + PlayerSize._HEIGHT / 2;
+
+        // Build bounds symmetrically around COM
+        const halfW = WorldConstants._BLOCKSIZEX * this.#TileViewField;
+        const halfH = WorldConstants._BLOCKSIZEY * this.#TileViewField;
+
+        const minX = comX - halfW;
+        const maxX = comX + halfW;
+        const minY = comY - halfH;  // top    (smaller Y = higher on screen)
+        const maxY = comY + halfH;  // bottom (larger  Y = lower  on screen)
+
+        let results = [];
+
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-            let engaged = matrix[row][col];
-            if(engaged.entityCenterOfMass){
-                let valueX = matrix[row][col].entityCenterOfMass[0];
-                let valueY = matrix[row][col].entityCenterOfMass[1];
-                if (
-                        valueX >= min[0] &&
-                        valueY <= min[1] &&
-                        valueX <= max[0] &&
-                        valueY >= max[1]
-                    ) 
-                    {
-                    results.push({ engaged, valueX, valueY, row, col });
+                const engaged = matrix[row][col];
+
+                if (engaged.entityCenterOfMass) {
+                    const valueX = engaged.entityCenterOfMass[0];
+                    const valueY = engaged.entityCenterOfMass[1];
+
+                    if (
+                        valueX >= minX &&
+                        valueX <= maxX &&
+                        valueY >= minY && 
+                        valueY <= maxY
+                    ) {
+                        results.push({ engaged, valueX, valueY, row, col });
                     }
                 }
-                //results.push({engaged,row, col})
             }
-            
         }
 
-    return results;
-    }
-        DrawTileViewBox(ctx) {
-        const boxWidth  = PlayerSize._WIDTH  * this.#TileViewField * 2;
-        const boxHeight = PlayerSize._HEIGHT * this.#TileViewField * 2;
+        return results;
+}
+    DrawTileViewBox(ctx) {
+        const halfW = WorldConstants._BLOCKSIZEX * this.#TileViewField;
+        const halfH = WorldConstants._BLOCKSIZEY * this.#TileViewField;
 
-        const x = this.entityPositionX - boxWidth  / 2;
-        const y = this.entityPositionY - boxHeight / 2;
+        // COM of player
+        const comX = this.entityPositionX + PlayerSize._WIDTH  / 2;
+        const comY = this.entityPositionY + PlayerSize._HEIGHT / 2;
+
+        // Top-left corner of the box, centered on COM
+        const x = comX - halfW;
+        const y = comY - halfH;
 
         ctx.save();
         ctx.strokeStyle = "rgba(255, 0, 0, 0.8)";
         ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, boxWidth, boxHeight);
+        ctx.strokeRect(x, y, halfW * 2, halfH * 2);
         ctx.restore();
     }
 }   

@@ -70,26 +70,25 @@ export class Entity{
         return centerOfmass;
 
     }
-    SetUpHitBox(sizeX=32, sizeY=32){
-        let minX =this.entityPositionX;
-        let maxX=this.entityPositionX+sizeX;
-        let minY=this.entityPositionY;
-        let maxY=this.entityPositionY+sizeY;
+    SetUpHitBox(sizeX = 32, sizeY = 32) {
+        const comX = this.entityPositionX + sizeX / 2;
+        const comY = this.entityPositionY + sizeY / 2;
 
-        return { minX, maxX, minY, maxY };
+        return {
+            minX: comX - sizeX / 2,
+            maxX: comX + sizeX / 2,
+            minY: comY - sizeY / 2,
+            maxY: comY + sizeY / 2,
+        };
     }
-    DrawHitBox(ctx, sizeX = 32, sizeY = 32) {
+
+    DrawHitBox(ctx,sizeX = 32, sizeY = 32) {
         const hitbox = this.SetUpHitBox(sizeX, sizeY);
-
-        const x = hitbox.minX;
-        const y = hitbox.minY;
-        const w = sizeX;
-        const h = sizeY;
-
         ctx.save();
         ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
         ctx.lineWidth = 2;
-        ctx.strokeRect(x, y, w, h);
+        ctx.strokeRect(hitbox.minX, hitbox.minY, sizeX, sizeY);
         ctx.restore();
     }
+
 }

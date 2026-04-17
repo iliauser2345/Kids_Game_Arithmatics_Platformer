@@ -61,7 +61,8 @@ export class Game{
         
         
         //DEMO STUFFFF
-        
+        this.player.SetUpHitBox(PlayerSize._WIDTH,PlayerSize._HEIGHT);
+        this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT,32,32);
         this.player.DrawTileViewBox(this.player.ctx);
        // console.log(this.player.PlayerSearchForTiles(this.world.matrix));
         this.player.PlayerSearchForTiles(this.world.matrix).forEach(t => {
@@ -73,8 +74,7 @@ export class Game{
                 SCRDIMENSIONS._TILEHEIGHT
             );
         });
-       // this.player.DrawHitBox(this.player.ctx, PlayerSize._WIDTH,PlayerSize._HEIGHT);
-        this.player.DrawHitBox(this.player.ctx, 120,80);
+
 
 
 
