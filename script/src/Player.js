@@ -54,7 +54,8 @@ export class Player extends Entity{
     // methods
 
     Update(delta, keysDown, matrix) {
-        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT)
+        this.COM = this.SetUpCOM(PlayerSize._WIDTH, PlayerSize._HEIGHT+80)
+        this.PlayerCollisionDetectionHandler(this.PlayerSearchForTiles(matrix),matrix);
         this.HandleInput(delta, keysDown);
         this.Move(delta);
         this.HandleAnimation();
@@ -138,43 +139,47 @@ export class Player extends Entity{
         }
     }
 
-    HandleY(delta, keysDown){
-        this.onGround = this.entityPositionY >= WorldConstants._GROUND;
-        
-        if (this.onGround) {
-            this.#JumpCount = 0;
-            if (this.entityVelocityY > 0) {
-                this.SetVelocity({ y: 0 });
-                this.entityPositionY = WorldConstants._GROUND;
-            }
-        }
+    HandleY(delta, keysDown) {
+    // onGround is now set by PlayerCollisionHandler, not a flat world boundary
+    // but keep world floor as a fallback
+    // this.onGround=false;
+    if (this.entityPositionY >= WorldConstants._GROUND) {
+        this.onGround = true;
+        this.entityPositionY = WorldConstants._GROUND;
+    }
 
-        if (this.dashing) {
-            this.SetVelocity({y: 0});
-            return;
-        }
-
-        const jumpKeyPressed = !!keysDown[KEYS._JMP];
-
-        if (jumpKeyPressed && this.#JumpReleased && this.#JumpCount < 2 && !this.dodging) {
-            this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
-            this.#JumpCount++;
-            this.#JumpReleased = false;
-            this.#JumpOnce = true;
-            this.onGround = false;
-        } 
-        
-        if (!jumpKeyPressed) {
-            this.#JumpReleased = true;
-        }
-
-        if (!this.onGround) {
-            this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
-        } else if (!jumpKeyPressed) {
+    if (this.onGround) {
+        this.#JumpCount = 0;
+        if (this.entityVelocityY > 0) {
             this.SetVelocity({ y: 0 });
-            this.entityPositionY = WorldConstants._GROUND;
         }
     }
+
+    if (this.dashing) {
+        this.SetVelocity({ y: 0 });
+        return;
+    }
+
+    const jumpKeyPressed = !!keysDown[KEYS._JMP];
+    if (jumpKeyPressed && this.#JumpReleased && this.#JumpCount < 2 && !this.dodging) {
+        this.SetVelocity({ y: PlayerPhysics._JUMP_FORCE });
+        this.#JumpCount++;
+        this.#JumpReleased = false;
+        this.#JumpOnce = true;
+        this.onGround = false;
+    }
+
+    if (!jumpKeyPressed) {
+        this.#JumpReleased = true;
+    }
+
+    if (!this.onGround) {
+        this.SetVelocity({ y: this.entityVelocityY + PlayerPhysics._GRAVITY * delta });
+    } else if (!jumpKeyPressed) {
+        this.SetVelocity({ y: 0 });
+        // don't snap Y here — PlayerCollisionHandler already placed the player on the tile
+    }
+}
 
     HandleATK(delta, keysDown){
 
@@ -272,37 +277,100 @@ export class Player extends Entity{
     }
 
     PlayerSearchForTiles(matrix,
-        min=[
-            this.COM[0]-PlayerSize._WIDTH*this.#TileViewField,
-            this.COM[1]+PlayerSize._HEIGHT*this.#TileViewField],
-        max=[
-            this.COM[0]+PlayerSize._WIDTH*this.#TileViewField,
-            this.COM[1]-PlayerSize._HEIGHT*this.#TileViewField]
-        )
-    {
-        const results=[];
+        min = [
+            this.COM[0] - PlayerSize._WIDTH  * this.#TileViewField,
+            this.COM[1] - PlayerSize._HEIGHT * this.#TileViewField
+        ],
+        max = [
+            this.COM[0] + PlayerSize._WIDTH  * this.#TileViewField,
+            this.COM[1] + PlayerSize._HEIGHT * this.#TileViewField
+        ]
+    ) {
+        const results = [];
         for (let row = 0; row < matrix.length; row++) {
             for (let col = 0; col < matrix[row].length; col++) {
-            const engaged = matrix[row][col];
-            if(engaged.entityCenterOfMass){
-                const valueX = matrix[row][col].entityCenterOfMass[0];
-                const valueY = matrix[row][col].entityCenterOfMass[1];
-                if (
+                const engaged = matrix[row][col];
+                if (engaged.entityCenterOfMass) {
+                    const valueX = engaged.entityCenterOfMass[0];
+                    const valueY = engaged.entityCenterOfMass[1];
+                    if (
                         valueX >= min[0] &&
-                        valueY <= min[1] &&
                         valueX <= max[0] &&
-                        valueY >= max[1]
-                    ) 
-                    {
-                    results.push({ engaged, valueX, valueY, row, col });
+                        valueY >= min[1] &&
+                        valueY <= max[1]
+                    ) {
+                        results.push({ engaged });
                     }
                 }
-                //results.push({engaged,row, col})
             }
-            
+        }
+        return results;
+    }
+
+    PlayerCollisionDetectionHandler(NearbyTiles = [], matrix) {
+        NearbyTiles = this.PlayerSearchForTiles(matrix);
+        this.onGround=false;
+        const intruders = [];
+
+        if (NearbyTiles.length === 0) {
+            console.log("No collisions detected");
+            return;
         }
 
-    return results;
+        NearbyTiles.forEach(({ engaged: element }) => {
+            const tileMinX = element.entityPositionX;
+            const tileMinY = element.entityPositionY;
+            const tileMaxX = element.entityPositionX + WorldConstants._BLOCKSIZEX;
+            const tileMaxY = element.entityPositionY + WorldConstants._BLOCKSIZEY;
+
+            if (
+                this.COM[0] >= tileMinX &&
+                this.COM[0] <= tileMaxX &&
+                this.COM[1] >= tileMinY &&
+                this.COM[1] <= tileMaxY
+            ) {
+                intruders.push(element);  
+                console.log("success");
+            }
+        });
+
+        this.PlayerCollisionHandler(intruders, matrix);
+    }
+
+    PlayerCollisionHandler(IntrudingTiles = []) {
+        if (IntrudingTiles.length === 0) {
+            console.log("No collisions to resolve");
+            return;
+        }
+
+        IntrudingTiles.forEach(element => {
+            // Overlap on each axis
+            const overlapTop   = (this.entityPositionY + PlayerSize._HEIGHT) - element.entityPositionY;
+            const overlapLeft  = (this.entityPositionX + PlayerSize._WIDTH)  - element.entityPositionX;
+            const overlapRight = (element.entityPositionX + WorldConstants._BLOCKSIZEX) - this.entityPositionX;
+            const overlapBottom= (element.entityPositionY + WorldConstants._BLOCKSIZEY) - this.entityPositionY;
+
+
+            const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
+
+            if (minOverlap === overlapTop) {
+                this.MoveTo(this.entityPositionX, element.entityPositionY - PlayerSize._HEIGHT);
+                this.SetVelocity({y: 0});  
+                this.onGround = true;
+
+            } if (minOverlap === overlapBottom) {
+                this.MoveTo(this.entityPositionX, this.COM[1] + WorldConstants._BLOCKSIZEY * 4);
+                this.SetVelocity({y: 0}); 
+
+            } if (minOverlap === overlapLeft) {
+                this.MoveTo(element.entityPositionX - PlayerSize._WIDTH, this.entityPositionY);
+                this.SetVelocity({x: 0}); 
+
+            } if (minOverlap === overlapRight) {
+                this.MoveTo(element.entityPositionX + WorldConstants._BLOCKSIZEX, this.entityPositionY);
+                this.SetVelocity({x: 0}); 
+            }
+        });
     }
         DrawTileViewBox(ctx) {
         const boxWidth  = PlayerSize._WIDTH  * this.#TileViewField * 2;
