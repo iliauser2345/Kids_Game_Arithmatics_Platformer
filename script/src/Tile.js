@@ -25,7 +25,7 @@ export class Tile extends Entity {
     Draw(ctx) {
         const tileType = TileTypeMap[this.#tileINDX];
         if (!tileType) return;
-
+        this.DrawHitBox(ctx);
         const { x, y } = BlockLoc[tileType];
         ctx.drawImage(
             Images._ENVIRONMENT,
