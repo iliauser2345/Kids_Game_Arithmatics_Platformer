@@ -315,7 +315,6 @@ export class Player extends Entity{
                         valueY <= max[1]
                     ) {
                         results.push({ engaged });
-                        console.log("1");
                     }
                 }
             }
