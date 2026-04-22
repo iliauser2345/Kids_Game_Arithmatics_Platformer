@@ -27,7 +27,7 @@ export const KEYS ={
     _RWD: "D",
     _JMP: "Space",
     _DGE: "Ctrl",
-    _AUX: "Shift", // auxiliary key for additional functions like sprint (Shift+A/D) etc.
+    _AUX: "Shift", // auxiliary key for additional functions like dash (Shift+A/D) etc.
     _ATK:  0, //LMB
     _PRY:  2, //RMB
     _ACT: "E",
@@ -91,8 +91,8 @@ export const WorldConstants = {
     _BLOCKSIZEY: 32,
     _WORLDSIZEX: ScreenSize._WIDTH,
     _WORLDSIZEY: ScreenSize._HEIGHT,
-    _GRIDSIZEX: Math.ceil(SCRDIMENSIONS._SCRWIDTH/SCRDIMENSIONS._TILEWIDTH),
-    _GRIDSIZEY: Math.ceil(SCRDIMENSIONS._SCRHEIGHT/SCRDIMENSIONS._TILEHEIGHT),
+    _GRIDSIZEX: Math.ceil(SCRDIMENSIONS._SCRWIDTH  / SCRDIMENSIONS._TILEWIDTH)  * 4, // ← multiply by however wide you want the world
+    _GRIDSIZEY: Math.ceil(SCRDIMENSIONS._SCRHEIGHT / SCRDIMENSIONS._TILEHEIGHT),     // Y can stay the same
     get _GROUND() {
         // Same row formula as World.js: (rows - 1) * blockSize
         const groundTileY = (Math.ceil(SCRDIMENSIONS._SCRHEIGHT / this._BLOCKSIZEY) - 1) * this._BLOCKSIZEY;

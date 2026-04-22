@@ -3,10 +3,7 @@ import { Tile } from './Tile.js';
 
 export class World{
     
-
-    
     constructor(){
-
         this.WorldGrid = [];
         this.backgrImg = new Image();
         this.enemy;
@@ -23,7 +20,7 @@ export class World{
     /*
      * De creation van de layers zier er een beetje zo uit:
      *   0 - background  (sky, far bg)      draw once
-     *   1 - world       (tiles/map)        redraw on camera scroll
+     *   1 - world       (tiles/map)        redraw every frame (camera scroll)
      *   2 - entities    (player/enemies)   clear & redraw every frame
      *   3 - hud         (UI/inventory)     redraw on state change
      */
@@ -50,25 +47,22 @@ export class World{
         ctx.imageSmoothingEnabled = false; 
         return ctx;
     }
+
     SetUpGrid(){
         const matrix=[];
-        console.log(SCRDIMENSIONS._SCRWIDTH);
-        console.log(SCRDIMENSIONS._SCRHEIGHT);
         for (let y = 0; y < WorldConstants._GRIDSIZEY; y++) {
             const row = [];
             let IsGround = 0;
-            if (y == WorldConstants._GRIDSIZEY - 1){IsGround = 1}
+            if (y == WorldConstants._GRIDSIZEY - 1){ IsGround = 1; }
             for (let x = 0; x < WorldConstants._GRIDSIZEX; x++) {
-                row.push(new Tile({xas:SCRDIMENSIONS._TILEWIDTH*x, yas:SCRDIMENSIONS._TILEHEIGHT*y, tileINDX:IsGround}));
-               
-
+                row.push(new Tile({xas: SCRDIMENSIONS._TILEWIDTH * x, yas: SCRDIMENSIONS._TILEHEIGHT * y, tileINDX: IsGround}));
             }
             matrix.push(row);
         }
-        //matrix.forEach(row => console.log(row.join(' ][ ')));   
         return matrix;
     }
-    TilePositioning(matrix, factor, distance, amount, marge) {// matrix - grid; factor- how wide a gap would be; distance- distance between gaps; amount- amount of levels(platform) on a map; marge- distance between those platforms(in tiles)
+
+    TilePositioning(matrix, factor, distance, amount, marge) {
         for (
             let yindex = matrix.length - 1 - marge, i = 0;
             i < amount && yindex >= 0;
@@ -89,28 +83,27 @@ export class World{
     }
     
     GenerateWorld() {
-        this.matrix=this.SetUpGrid();
+        this.matrix = this.SetUpGrid();
         this.TilePositioning(
-
             this.matrix,
             4, // gap length
             5, // distance between gaps
             4, // amount of platforms (y axis)
-            4 // distance between levels (y axis)
+            4  // distance between levels (y axis)
         );
+
         this.backgrImg.onload = () => {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         };
         this.backgrImg.src = "./assets/Image.png";
-        // If already loaded (cached), draw immediately
         if (this.backgrImg.complete) {
             this.backgroundCtx.drawImage(this.backgrImg, 0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
         }
 
-        // Draw tiles once (worldCtx is static until camera scrolls)
+        // Initial tile draw — will also be redrawn every frame via RedrawTiles()
         Images._ENVIRONMENT.onload = () => this.DrawTiles();
-        // If already loaded (cached), draw immediately
         if (Images._ENVIRONMENT.complete) this.DrawTiles();
+
         return this.matrix;
     }
 
@@ -120,6 +113,20 @@ export class World{
                 tile.Draw(this.worldCtx);
             }
         }
+    }
+
+    /**
+     * Clears and redraws the world layer with the given camera offset.
+     * Call this every frame from the game loop.
+     * @param {number} cameraX
+     * @param {number} cameraY
+     */
+    RedrawTiles(cameraX = 0, cameraY = 0) {
+        this.worldCtx.clearRect(0, 0, SCRDIMENSIONS._SCRWIDTH, SCRDIMENSIONS._SCRHEIGHT);
+        this.worldCtx.save();
+        this.worldCtx.translate(-Math.floor(cameraX), -Math.floor(cameraY));
+        this.DrawTiles();
+        this.worldCtx.restore();
     }
 
     // Call each frame before entities are drawn

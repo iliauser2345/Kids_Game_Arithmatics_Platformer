@@ -34,8 +34,8 @@ export class Tile extends Entity {
             WorldConstants._BLOCKSIZEY,
             Math.floor(this.entityPositionX),
             Math.floor(this.entityPositionY),
-            WorldConstants._BLOCKSIZEX + 1,  // ← 1px overdraw
-            WorldConstants._BLOCKSIZEY + 1
+            WorldConstants._BLOCKSIZEX,
+            WorldConstants._BLOCKSIZEY
         );
     }
 }
