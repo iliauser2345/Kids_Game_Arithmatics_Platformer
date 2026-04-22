@@ -71,10 +71,12 @@ export class Entity{
         const minY = this.entityPositionY;
         const maxY = this.entityPositionY + sizeY;
 
-        this.entityHitBox = { minX, maxX, minY, maxY };
-        return this.entityHitBox;
+        
+        return {minX, maxX, minY, maxY};
     }
+    
     DrawHitBox(ctx, sizeX = 32, sizeY = 32) {
+    
         const hitbox = this.SetUpHitBox(sizeX, sizeY);
 
         const x = hitbox.minX;
