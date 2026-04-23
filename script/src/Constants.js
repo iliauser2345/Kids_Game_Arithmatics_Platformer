@@ -39,7 +39,7 @@ export const KEYS ={
 
 export const SCRDIMENSIONS ={
 
-    _SCRHEIGHT: 1080,
+    _SCRHEIGHT: 1200,
     _SCRWIDTH:  1920,
     _TILEHEIGHT: 32, //px
     _TILEWIDTH:  32 //px
